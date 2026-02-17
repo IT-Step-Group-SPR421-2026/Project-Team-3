@@ -7,6 +7,7 @@ class Habit(models.Model):
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    color = models.CharField(max_length=24, default="#9be9a8")
 
     def __str__(self):
         return f"Habit: {self.name}"
