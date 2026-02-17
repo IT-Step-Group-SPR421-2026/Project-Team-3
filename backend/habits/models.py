@@ -43,6 +43,22 @@ class Habit(models.Model):
         return max_streak
 
 
+def get_color_for_count(count: int) -> str:
+    """
+    0   -> '#ebedf0'  (gray)
+    1-2 -> '#9be9a8'  (light green)
+    3-4 -> '#40c463'  (medium green)
+    5+  -> '#216e39'  (dark green)
+    """
+    if count == 0:
+        return "#ebedf0"
+    if 1 <= count <= 2:
+        return "#9be9a8"
+    if 3 <= count <= 4:
+        return "#40c463"
+    return "#216e39"
+
+
 class CheckIn(models.Model):
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name="checkins")
     date = models.DateField()
@@ -61,18 +77,11 @@ class CheckIn(models.Model):
     def count_for_date(cls, date):
         return cls.objects.filter(date=date).count()
 
+    @classmethod
+    def color_for_date(cls, date):
+
+        return get_color_for_count(cls.count_for_date(date))
+
     def color(self):
-        """
-        0   -> '#ebedf0'  (gray)
-        1-2 -> '#9be9a8'  (light green)
-        3-4 -> '#40c463'  (medium green)
-        5+  -> '#216e39'  (dark green)
-        """
-        count = self.count_for_date(self.date)
-        if count == 0:
-            return "#ebedf0"
-        if 1 <= count <= 2:
-            return "#9be9a8"
-        if 3 <= count <= 4:
-            return "#40c463"
-        return "#216e39"
+
+        return self.__class__.color_for_date(self.date)

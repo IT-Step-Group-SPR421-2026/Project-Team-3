@@ -1,7 +1,7 @@
 from django.test import TestCase
 from datetime import date
 
-from .models import Habit, CheckIn
+from .models import Habit, CheckIn, get_color_for_count
 
 
 class HabitModelTests(TestCase):
@@ -46,3 +46,26 @@ class CheckInColorTests(TestCase):
         c5 = CheckIn.objects.create(habit=h5, date=d)
         self.assertEqual(c5.color(), "#216e39")
         self.assertEqual(c1.color(), "#216e39")
+
+    def test_color_helpers_and_classmethod(self):
+        # direct mapping tests for get_color_for_count
+        self.assertEqual(get_color_for_count(0), "#ebedf0")
+        self.assertEqual(get_color_for_count(1), "#9be9a8")
+        self.assertEqual(get_color_for_count(2), "#9be9a8")
+        self.assertEqual(get_color_for_count(3), "#40c463")
+        self.assertEqual(get_color_for_count(4), "#40c463")
+        self.assertEqual(get_color_for_count(5), "#216e39")
+
+        # classmethod should reflect aggregated counts for a date
+        h1 = Habit.objects.create(name="X")
+        h2 = Habit.objects.create(name="Y")
+        d = date(2026, 3, 3)
+        CheckIn.objects.create(habit=h1, date=d)
+        self.assertEqual(CheckIn.color_for_date(d), "#9be9a8") 
+        CheckIn.objects.create(habit=h2, date=d)
+        self.assertEqual(CheckIn.color_for_date(d), "#9be9a8")
+        # add more to push into other buckets
+        for i in range(3):
+            h = Habit.objects.create(name=f"Z{i}")
+            CheckIn.objects.create(habit=h, date=d)
+        self.assertEqual(CheckIn.color_for_date(d), "#216e39")
