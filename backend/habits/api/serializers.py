@@ -8,7 +8,15 @@ class HabitSerializer(ModelSerializer):
 
     class Meta:
         model = Habit
-        fields = ("id", "name", "description", "created_at", "current_streak", "longest_streak")
+        fields = (
+            "id",
+            "name",
+            "color",
+            "description",
+            "created_at",
+            "current_streak",
+            "longest_streak",
+        )
 
     def get_current_streak(self, obj):
         return obj.current_streak()

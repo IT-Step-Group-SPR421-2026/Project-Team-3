@@ -1,8 +1,16 @@
+<div align="center">
+
 # Habit Heatmap Tracker
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-FFCB2B?style=for-the-badge&logo=firebase&logoColor=000000)
+### _A GitHub-style contributions calendar for daily habits_
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+[![Django](https://img.shields.io/badge/Django-6.0-092E20?logo=django)](https://www.djangoproject.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCB2B?logo=firebase)](https://firebase.google.com/)
+
+---
+
+</div>
 
 🚀 A GitHub-style contributions calendar for daily habits.
 
