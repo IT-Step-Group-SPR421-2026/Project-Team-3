@@ -16,13 +16,10 @@ class HabitSerializer(ModelSerializer):
             "created_at",
             "current_streak",
             "longest_streak",
-        , "longest_streak")
+        )
 
     def get_current_streak(self, obj):
         return obj.current_streak()
-
-    def get_longest_streak(self, obj):
-        return obj.longest_streak()
 
     def get_longest_streak(self, obj):
         return obj.longest_streak()
