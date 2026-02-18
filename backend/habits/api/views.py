@@ -11,4 +11,4 @@ class HabitViewSet(ModelViewSet):
 class CheckInViewSet(ModelViewSet):
     queryset = CheckIn.objects.all()
     serializer_class = CheckInSerializer
-    http_method_names = ["post", "delete", "head", "options"]
+    http_method_names = ["get", "post", "delete", "head", "options"]
