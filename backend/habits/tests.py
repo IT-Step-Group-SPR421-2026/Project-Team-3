@@ -1,5 +1,7 @@
 from django.test import TestCase
-from datetime import date
+from datetime import date, timedelta
+
+from django.utils import timezone
 
 from .models import Habit, CheckIn, get_color_for_count
 
@@ -69,3 +71,43 @@ class CheckInColorTests(TestCase):
             h = Habit.objects.create(name=f"Z{i}")
             CheckIn.objects.create(habit=h, date=d)
         self.assertEqual(CheckIn.color_for_date(d), "#216e39")
+
+class ApiEndpointTests(TestCase):
+    def setUp(self):
+        from rest_framework.test import APIClient
+
+        self.client = APIClient()
+
+    def test_heatmap_endpoint_ranges_and_colors(self):
+        h = Habit.objects.create(name="Heat")
+        CheckIn.objects.create(habit=h, date=date(2026, 2, 10))
+        CheckIn.objects.create(habit=h, date=date(2026, 2, 12))
+        resp = self.client.get("/api/heatmap/", {"from": "2026-02-10", "to": "2026-02-13"})
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data), 4)
+        counts = {item["date"]: item for item in data}
+        self.assertEqual(counts["2026-02-10"]["count"], 1)
+        self.assertEqual(counts["2026-02-11"]["count"], 0)
+        self.assertEqual(counts["2026-02-12"]["count"], 1)
+        self.assertEqual(counts["2026-02-11"]["color"], get_color_for_count(0))
+
+    def test_stats_endpoint_basic_metrics(self):
+        h = Habit.objects.create(name="StatHabit", created_at=timezone.now())
+        CheckIn.objects.create(habit=h, date=timezone.localdate())
+        CheckIn.objects.create(habit=h, date=timezone.localdate() - timedelta(days=1))
+        resp = self.client.get("/api/stats/", {"habit_id": h.id}) # type: ignore
+        self.assertEqual(resp.status_code, 200)
+        payload = resp.json()
+        self.assertEqual(payload["total_completed"], 2)
+        self.assertTrue(0 <= payload["completion_percentage"] <= 100)
+        self.assertEqual(payload["current_streak"], h.current_streak())
+        self.assertEqual(payload["longest_streak"], h.longest_streak())
+
+    def test_missing_parameters_and_errors(self):
+        resp = self.client.get("/api/heatmap/")
+        self.assertEqual(resp.status_code, 400)
+        resp = self.client.get("/api/stats/")
+        self.assertEqual(resp.status_code, 400)
+        resp = self.client.get("/api/stats/", {"habit_id": 9999})
+        self.assertEqual(resp.status_code, 404)
