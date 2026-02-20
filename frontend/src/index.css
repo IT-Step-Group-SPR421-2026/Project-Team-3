@@ -109,6 +109,11 @@ input, textarea {
 ::-webkit-scrollbar-thumb        { background: var(--border); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover  { background: var(--border); }
 
+/* Firefox and other non-WebKit browsers */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
 /* ============================================================
    LAYOUT — Dashboard
    ============================================================ */
