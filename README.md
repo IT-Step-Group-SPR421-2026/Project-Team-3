@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="frontend/src/assets/leaf.svg" width="120" alt="Leaf-icon">
+</p>
+
 # Habit Heatmap Tracker
 
 ### _A GitHub-style contributions calendar for daily habits_
