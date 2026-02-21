@@ -48,11 +48,13 @@ def heatmap(request):
     current = start
     while current <= end:
         cnt = counts.get(current, 0)
-        result.append({
-            "date": current,
-            "count": cnt,
-            "color": get_color_for_count(cnt),
-        })
+        result.append(
+            {
+                "date": current,
+                "count": cnt,
+                "color": get_color_for_count(cnt),
+            }
+        )
         current += timedelta(days=1)
     return Response(result)
 
@@ -77,15 +79,17 @@ def stats(request):
     # compute span from whichever comes first, habit creation or first checkin, up to today
     today = timezone.localdate()
     start_date = habit.created_at.date()
-    first = habit.checkins.order_by("date").values_list("date", flat=True).first() # type: ignore
+    first = habit.checkins.order_by("date").values_list("date", flat=True).first()  # type: ignore
     if first and first < start_date:
         start_date = first
     days = (today - start_date).days + 1
     percentage = (total / days * 100) if days > 0 else 0
 
-    return Response({
-        "total_completed": total,
-        "completion_percentage": percentage,
-        "current_streak": habit.current_streak(),
-        "longest_streak": habit.longest_streak(),
-    })
+    return Response(
+        {
+            "total_completed": total,
+            "completion_percentage": percentage,
+            "current_streak": habit.current_streak(),
+            "longest_streak": habit.longest_streak(),
+        }
+    )
