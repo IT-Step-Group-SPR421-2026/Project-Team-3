@@ -53,11 +53,13 @@ def heatmap(request):
     current = start
     while current <= end:
         cnt = counts.get(current, 0)
-        result.append({
-            "date": current,
-            "count": cnt,
-            "color": get_color_for_count(cnt),
-        })
+        result.append(
+            {
+                "date": current,
+                "count": cnt,
+                "color": get_color_for_count(cnt),
+            }
+        )
         current += timedelta(days=1)
     return Response(result)
 
