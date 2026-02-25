@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.db.models import Count
 from django.utils import timezone
@@ -40,6 +40,11 @@ def heatmap(request):
     if end < start:
         return Response({"detail": "to must be after from"}, status=400)
 
+    # enforce a maximum range of 1 year (inclusive)
+    days_span = (end - start).days + 1
+    if days_span > 366:
+        return Response({"detail": "Date range too large (max 1 year)"}, status=400)
+
     qs = CheckIn.objects.filter(date__range=(start, end))
     aggregated = qs.values("date").annotate(count=Count("id"))
     counts = {entry["date"]: entry["count"] for entry in aggregated}
@@ -59,33 +64,83 @@ def heatmap(request):
 
 @api_view(["GET"])
 def stats(request):
-    """Return summary statistics for a single habit.
+    """Return summary statistics.
+
+    When ``habit_id`` is provided, returns stats for that habit.
+    When omitted, returns global stats across all habits.
 
     Query params:
-      habit_id - primary key of the habit
+      habit_id - optional primary key of the habit
     """
 
     hid = request.GET.get("habit_id")
-    if not hid:
-        return Response({"detail": "habit_id required"}, status=400)
-    try:
-        habit = Habit.objects.get(pk=hid)
-    except Habit.DoesNotExist:
-        return Response({"detail": "Habit not found"}, status=404)
 
-    total = habit.checkins.count()  # type: ignore
-    # compute span from whichever comes first, habit creation or first checkin, up to today
-    today = timezone.localdate()
-    start_date = habit.created_at.date()
-    first = habit.checkins.order_by("date").values_list("date", flat=True).first() # type: ignore
-    if first and first < start_date:
-        start_date = first
-    days = (today - start_date).days + 1
-    percentage = (total / days * 100) if days > 0 else 0
+    def build_buckets(qs):
+        # weekly buckets
+        weekly_qs = (
+            qs.values("date__year", "date__week")
+            .annotate(count=Count("id"))
+            .order_by("date__year", "date__week")
+        )
+        weekly = []
+        for entry in weekly_qs:
+            year = entry["date__year"]
+            week = entry["date__week"]
+            # ISO week start (Monday)
+            week_start = date.fromisocalendar(year, week, 1)
+            weekly.append({"week_start": week_start, "count": entry["count"]})
+
+        # monthly buckets
+        monthly_qs = (
+            qs.values("date__year", "date__month")
+            .annotate(count=Count("id"))
+            .order_by("date__year", "date__month")
+        )
+        monthly = []
+        for entry in monthly_qs:
+            year = entry["date__year"]
+            month = entry["date__month"]
+            month_start = date(year, month, 1)
+            monthly.append({"month_start": month_start, "count": entry["count"]})
+
+        return {"weekly": weekly, "monthly": monthly}
+
+    if hid:
+        try:
+            habit = Habit.objects.get(pk=hid)
+        except Habit.DoesNotExist:
+            return Response({"detail": "Habit not found"}, status=404)
+
+        total = habit.checkins.count()  # type: ignore
+        # compute span from whichever comes first, habit creation or first checkin, up to today
+        today = timezone.localdate()
+        start_date = habit.created_at.date()
+        first = habit.checkins.order_by("date").values_list("date", flat=True).first() # type: ignore
+        if first and first < start_date:
+            start_date = first
+        days = (today - start_date).days + 1
+        percentage = (total / days * 100) if days > 0 else 0
+
+        buckets = build_buckets(habit.checkins.all())  # type: ignore
+
+        return Response({
+            "scope": "habit",
+            "habit_id": habit.id,  # type: ignore
+            "total_completed": total,
+            "completion_percentage": percentage,
+            "current_streak": habit.current_streak(),
+            "longest_streak": habit.longest_streak(),
+            **buckets,
+        })
+
+    # global stats (no habit_id)
+    qs = CheckIn.objects.all()
+    total_completed = qs.count()
+    buckets = build_buckets(qs)
 
     return Response({
-        "total_completed": total,
-        "completion_percentage": percentage,
-        "current_streak": habit.current_streak(),
-        "longest_streak": habit.longest_streak(),
+        "scope": "global",
+        "total_completed": total_completed,
+        "habits_count": Habit.objects.count(),
+        **buckets,
     })
