@@ -92,6 +92,12 @@ class ApiEndpointTests(TestCase):
         self.assertEqual(counts["2026-02-12"]["count"], 1)
         self.assertEqual(counts["2026-02-11"]["color"], get_color_for_count(0))
 
+    def test_heatmap_rejects_too_large_range(self):
+        # more than 1 year (366 days) should be rejected
+        resp = self.client.get("/api/heatmap/", {"from": "2024-01-01", "to": "2026-01-01"})
+        self.assertEqual(resp.status_code, 400)
+        self.assertIn("Date range too large", resp.json()["detail"])
+
     def test_stats_endpoint_basic_metrics(self):
         h = Habit.objects.create(name="StatHabit", created_at=timezone.now())
         CheckIn.objects.create(habit=h, date=timezone.localdate())
@@ -103,11 +109,29 @@ class ApiEndpointTests(TestCase):
         self.assertTrue(0 <= payload["completion_percentage"] <= 100)
         self.assertEqual(payload["current_streak"], h.current_streak())
         self.assertEqual(payload["longest_streak"], h.longest_streak())
+        # habit-scoped stats should include weekly and monthly buckets
+        self.assertIn("weekly", payload)
+        self.assertIn("monthly", payload)
+
+    def test_stats_global_metrics_and_buckets(self):
+        h1 = Habit.objects.create(name="Global1", created_at=timezone.now())
+        h2 = Habit.objects.create(name="Global2", created_at=timezone.now())
+
+        today = timezone.localdate()
+        CheckIn.objects.create(habit=h1, date=today)
+        CheckIn.objects.create(habit=h2, date=today)
+
+        resp = self.client.get("/api/stats/")
+        self.assertEqual(resp.status_code, 200)
+        payload = resp.json()
+        self.assertEqual(payload["scope"], "global")
+        self.assertEqual(payload["total_completed"], 2)
+        self.assertGreaterEqual(payload["habits_count"], 2)
+        self.assertIn("weekly", payload)
+        self.assertIn("monthly", payload)
 
     def test_missing_parameters_and_errors(self):
         resp = self.client.get("/api/heatmap/")
-        self.assertEqual(resp.status_code, 400)
-        resp = self.client.get("/api/stats/")
         self.assertEqual(resp.status_code, 400)
         resp = self.client.get("/api/stats/", {"habit_id": 9999})
         self.assertEqual(resp.status_code, 404)
