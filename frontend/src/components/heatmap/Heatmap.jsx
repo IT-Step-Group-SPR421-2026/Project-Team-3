@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { formatFull, todayStr } from "../../utils/dateHelpers";
 import "./Heatmap.css";
 
@@ -121,106 +122,161 @@ function buildMonthLabels(weeks) {
 // ─────────────────────────────────────────────────────────────
 // Heatmap Component
 // ─────────────────────────────────────────────────────────────
-export default function Heatmap({ heatmapData }) {
+export default function Heatmap({ heatmapData, onYearChange, loading }) {
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState("last365");
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+    if (onYearChange) {
+      onYearChange(year);
+    }
+  };
+
+  // Only show current year since project just started
+  const availableYears = [currentYear];
+
   const heatmapWeeks = buildHeatmapGrid(heatmapData);
   const monthLabels = buildMonthLabels(heatmapWeeks);
+
+  // Check if we have any actual data
+  const hasData = heatmapData && heatmapData.length > 0;
 
   return (
     <div className="heatmap-section">
       <div className="heatmap-card-header">
         <span className="heatmap-card-title">Activity Heatmap</span>
+        <div className="heatmap-year-selector">
+          <button
+            className={`year-btn ${selectedYear === "last365" ? "active" : ""}`}
+            onClick={() => handleYearChange("last365")}
+            disabled={loading}
+          >
+            Last 365 days
+          </button>
+          {availableYears.map((year) => (
+            <button
+              key={year}
+              className={`year-btn ${selectedYear === year ? "active" : ""}`}
+              onClick={() => handleYearChange(year)}
+              disabled={loading}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="heatmap-content">
-        <div className="heatmap-wrapper">
-          <div className="heatmap-inner">
-            {/*
+        {loading ? (
+          <div className="heatmap-loading">
+            <div className="heatmap-spinner"></div>
+            <div className="heatmap-loading-text">Loading...</div>
+          </div>
+        ) : !hasData ? (
+          <div className="heatmap-empty">
+            <div className="heatmap-empty-icon">📊</div>
+            <div className="heatmap-empty-text">
+              No activity data yet. Start completing habits to see your heatmap!
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="heatmap-wrapper">
+              <div className="heatmap-inner">
+                {/*
               Column-based layout:
               [day-label col] [weeks-area: month row on top, week columns below]
               This ensures month labels are always pixel-perfect above their columns.
             */}
-            <div className="heatmap-grid-wrap">
-              {/* Day labels column */}
-              <div className="heatmap-day-col">
-                {DAY_LABELS.map((label, i) => (
-                  <div key={i} className="heatmap-day-label">
-                    {label}
-                  </div>
-                ))}
-              </div>
-
-              {/* Weeks area */}
-              <div className="heatmap-weeks-area">
-                {/* Month label row — each label spans its exact month width, centered */}
-                <div className="heatmap-months-row">
-                  {monthLabels.map(({ label, startWeek, span }, i) => {
-                    // Width of `span` columns including their inter-column gaps
-                    const width = span * CELL + (span - 1) * GAP;
-                    // Left offset from the start of the weeks-cols area
-                    const left = startWeek * (CELL + GAP);
-                    return (
-                      <div
-                        key={i}
-                        className="heatmap-month-slot"
-                        style={{ width, left }}
-                      >
+                <div className="heatmap-grid-wrap">
+                  {/* Day labels column */}
+                  <div className="heatmap-day-col">
+                    {DAY_LABELS.map((label, i) => (
+                      <div key={i} className="heatmap-day-label">
                         {label}
                       </div>
-                    );
-                  })}
-                </div>
+                    ))}
+                  </div>
 
-                {/* Week columns */}
-                <div className="heatmap-weeks-cols">
-                  {heatmapWeeks.map((week, wi) => (
-                    <div key={wi} className="heatmap-week-col">
-                      {week.map((cell, di) =>
-                        cell.empty ? (
+                  {/* Weeks area */}
+                  <div className="heatmap-weeks-area">
+                    {/* Month label row — each label spans its exact month width, centered */}
+                    <div className="heatmap-months-row">
+                      {monthLabels.map(({ label, startWeek, span }, i) => {
+                        // Width of `span` columns including their inter-column gaps
+                        const width = span * CELL + (span - 1) * GAP;
+                        // Left offset from the start of the weeks-cols area
+                        const left = startWeek * (CELL + GAP);
+                        return (
                           <div
-                            key={di}
-                            className="heatmap-cell heatmap-cell-empty"
-                          />
-                        ) : (
-                          <div
-                            key={di}
-                            className="heatmap-cell"
-                            style={{
-                              backgroundColor: getHeatColor(cell.count),
-                              outline: cell.isToday
-                                ? "1.5px solid #4ade8088"
-                                : undefined,
-                              outlineOffset: "1px",
-                            }}
-                            data-tooltip={`${formatFull(cell.date)}${cell.count ? `  ·  ${cell.count} habit${cell.count > 1 ? "s" : ""}` : ""}`}
-                          />
-                        ),
-                      )}
+                            key={i}
+                            className="heatmap-month-slot"
+                            style={{ width, left }}
+                          >
+                            {label}
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
+
+                    {/* Week columns */}
+                    <div className="heatmap-weeks-cols">
+                      {heatmapWeeks.map((week, wi) => (
+                        <div key={wi} className="heatmap-week-col">
+                          {week.map((cell, di) =>
+                            cell.empty ? (
+                              <div
+                                key={di}
+                                className="heatmap-cell heatmap-cell-empty"
+                              />
+                            ) : (
+                              <div
+                                key={di}
+                                className="heatmap-cell"
+                                style={{
+                                  backgroundColor: getHeatColor(cell.count),
+                                  outline: cell.isToday
+                                    ? "1.5px solid #4ade8088"
+                                    : undefined,
+                                  outlineOffset: "1px",
+                                }}
+                                data-tooltip={`${formatFull(cell.date)}${cell.count ? `  ·  ${cell.count} habit${cell.count > 1 ? "s" : ""}` : ""}`}
+                              />
+                            ),
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Legend */}
-        <div className="heatmap-legend">
-          <span className="heatmap-legend-label">Less</span>
-          {[
-            "var(--heat-0)",
-            "var(--heat-1)",
-            "var(--heat-2)",
-            "var(--heat-3)",
-            "var(--heat-4)",
-          ].map((c, i) => (
-            <div
-              key={i}
-              className="heatmap-legend-cell"
-              style={{ background: c }}
-            />
-          ))}
-          <span className="heatmap-legend-label">More</span>
-        </div>
+            {/* Legend */}
+            <div className="heatmap-legend">
+              <span className="heatmap-legend-label">Less</span>
+              {[
+                "var(--heat-0)",
+                "var(--heat-1)",
+                "var(--heat-2)",
+                "var(--heat-3)",
+                "var(--heat-4)",
+              ].map((c, i) => {
+                const tooltips = ["0", "1-2", "3-4", "5-7", "8+"];
+                return (
+                  <div
+                    key={i}
+                    className="heatmap-legend-cell"
+                    style={{ background: c }}
+                    title={`${tooltips[i]} habits per day`}
+                  />
+                );
+              })}
+              <span className="heatmap-legend-label">More</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

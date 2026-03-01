@@ -32,3 +32,9 @@ export function getDateRange365() {
   const toStr = todayStr();
   return { fromStr, toStr };
 }
+
+export function getDateRangeForYear(year) {
+  const fromStr = `${year}-01-01`;
+  const toStr = `${year}-12-31`;
+  return { fromStr, toStr };
+}
