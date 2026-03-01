@@ -4,6 +4,7 @@ import { apiFetch } from "../../utils/api";
 import {
   todayStr,
   getDateRange365,
+  getDateRangeForYear,
   formatHeaderDate,
 } from "../../utils/dateHelpers";
 import AppHeader from "../layout/AppHeader";
@@ -22,9 +23,11 @@ export default function MainAppUI() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [togglingId, setTogglingId] = useState(null);
   const [editingHabit, setEditingHabit] = useState(null);
+  const [heatmapLoading, setHeatmapLoading] = useState(false);
 
   const headerRef = useRef(null);
   const todayRef = useRef(null);
@@ -35,23 +38,47 @@ export default function MainAppUI() {
   const refresh = useCallback(async () => {
     const { fromStr, toStr } = getDateRange365();
 
-    const [h, c, hm, st] = await Promise.all([
-      apiFetch("/habits/"),
-      apiFetch("/checkins/"),
-      apiFetch(`/heatmap/?from=${fromStr}&to=${toStr}`),
-      apiFetch("/stats/"),
-    ]);
-    setHabits(h);
-    setCheckins(c);
-    setHeatmapData(hm);
-    setStats(st);
+    try {
+      const [h, c, hm, st] = await Promise.all([
+        apiFetch("/habits/"),
+        apiFetch("/checkins/"),
+        apiFetch(`/heatmap/?from=${fromStr}&to=${toStr}`),
+        apiFetch("/stats/"),
+      ]);
+      setHabits(h);
+      setCheckins(c);
+      setHeatmapData(hm);
+      setStats(st);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+      setError(
+        "Failed to load data. Please check your connection and try again.",
+      );
+    }
+  }, []);
+
+  const fetchHeatmapForYear = useCallback(async (yearOrLast365) => {
+    setHeatmapLoading(true);
+    try {
+      let fromStr, toStr;
+      if (yearOrLast365 === "last365") {
+        ({ fromStr, toStr } = getDateRange365());
+      } else {
+        ({ fromStr, toStr } = getDateRangeForYear(yearOrLast365));
+      }
+      const hm = await apiFetch(`/heatmap/?from=${fromStr}&to=${toStr}`);
+      setHeatmapData(hm);
+    } catch (err) {
+      console.error("Failed to fetch heatmap:", err);
+    } finally {
+      setHeatmapLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    refresh()
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    refresh().finally(() => setLoading(false));
   }, [refresh]);
 
   // ── Entrance animation ─────────────────────────────────────
@@ -148,7 +175,29 @@ export default function MainAppUI() {
     return <LoadingSpinner />;
   }
 
-  // ──────────────────────────────────────────────────────────
+  // ── Error state ────────────────────────────────────────────
+  if (error) {
+    return (
+      <div className="app-shell">
+        <div className="error-container">
+          <div className="error-icon">⚠️</div>
+          <h2 className="error-title">Something went wrong</h2>
+          <p className="error-message">{error}</p>
+          <button
+            className="error-retry-btn"
+            onClick={() => {
+              setError(null);
+              setLoading(true);
+              refresh().finally(() => setLoading(false));
+            }}
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  // ---
   // Render
   // ──────────────────────────────────────────────────────────
   return (
@@ -200,7 +249,11 @@ export default function MainAppUI() {
 
         {/* Heatmap */}
         <div ref={heatmapRef}>
-          <Heatmap heatmapData={heatmapData} />
+          <Heatmap
+            heatmapData={heatmapData}
+            onYearChange={fetchHeatmapForYear}
+            loading={heatmapLoading}
+          />
         </div>
       </div>
 
