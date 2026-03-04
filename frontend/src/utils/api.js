@@ -1,11 +1,25 @@
 // ─────────────────────────────────────────────────────────────
 // API Configuration & Helper
 // ─────────────────────────────────────────────────────────────
+import { auth } from "../firebase";
+
 const API = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
 
 export async function apiFetch(path, opts = {}) {
+  // Attach Firebase ID token if a user is signed in
+  const authHeaders = {};
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    const token = await currentUser.getIdToken();
+    authHeaders["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API}${path}`, {
-    headers: { "Content-Type": "application/json", ...opts.headers },
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders,
+      ...opts.headers,
+    },
     ...opts,
   });
   if (!res.ok) {
