@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useNavigate } from "react-router-dom";
+import { IconLeaf } from "../components/icons/Icons";
 import "./HeroLanding.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -50,6 +51,21 @@ const STATS = [
   },
 ];
 
+const CREATORS = [
+  {
+    name: "Kyuuto09",
+    handle: "@Kyuuto09",
+    url: "https://github.com/Kyuuto09/",
+    avatar: "https://github.com/Kyuuto09.png",
+  },
+  {
+    name: "axneo27",
+    handle: "@axneo27",
+    url: "https://github.com/axneo27",
+    avatar: "https://github.com/axneo27.png",
+  },
+];
+
 export default function HeroLanding() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -91,7 +107,7 @@ export default function HeroLanding() {
       );
       gsap.set(logoRef.current, { scale: 0.7, y: 10 });
       gsap.set(badgeRef.current, { y: -12, scale: 0.92 });
-      gsap.set(".hero-char", { opacity: 0, y: 64, rotateX: -90 });
+      gsap.set(".hero-char", { opacity: 0, y: 64 });
       gsap.set(subtitleRef.current, { y: 28 });
       gsap.set(ctaWrapRef.current, { y: 20 });
       gsap.set(featuresRef.current, { y: 32 });
@@ -142,7 +158,6 @@ export default function HeroLanding() {
           {
             opacity: 1,
             y: 0,
-            rotateX: 0,
             duration: 0.65,
             stagger: 0.045,
             ease: "back.out(1.4)",
@@ -172,6 +187,31 @@ export default function HeroLanding() {
         scrollHintRef.current,
         { opacity: 1, duration: 0.6, ease: "power2.out" },
         "-=0.1",
+      );
+
+      // ── Logo dissolves — leaves a clean hero after its entrance moment ──
+      tl.to(
+        logoRef.current,
+        {
+          opacity: 0,
+          scale: 1.12,
+          filter: "blur(10px)",
+          duration: 0.52,
+          ease: "power2.in",
+        },
+        "+=0.42",
+      ).to(
+        logoRef.current,
+        {
+          height: 0,
+          marginBottom: -28, // cancel the flex gap so badge glides up
+          duration: 0.38,
+          ease: "sine.inOut",
+          onComplete: () => {
+            if (logoRef.current) logoRef.current.style.visibility = "hidden";
+          },
+        },
+        "-=0.28",
       );
 
       // Auto-hide scroll hint once user scrolls
@@ -336,6 +376,82 @@ export default function HeroLanding() {
         ease: "power3.out",
       });
 
+      // ── Creators section reveal ──
+      gsap.from(".creators-label", {
+        scrollTrigger: {
+          trigger: ".creators-section",
+          start: "top 88%",
+          toggleActions: "play none none reverse",
+        },
+        y: 18,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+
+      gsap.from(".creators-title-text", {
+        scrollTrigger: {
+          trigger: ".creators-section",
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        y: 32,
+        opacity: 0,
+        duration: 0.7,
+        delay: 0.1,
+        ease: "power3.out",
+      });
+
+      document.querySelectorAll(".creator-card").forEach((card, i) => {
+        // Scroll entrance — cards fly in from opposite sides
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: ".creators-grid",
+            start: "top 82%",
+            toggleActions: "play none none reverse",
+          },
+          x: i === 0 ? -80 : 80,
+          y: 40,
+          opacity: 0,
+          scale: 0.9,
+          rotation: i === 0 ? -5 : 5,
+          duration: 0.8,
+          delay: i * 0.15,
+          ease: "back.out(1.5)",
+        });
+
+        // 3D magnetic tilt on hover
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const dx =
+            (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+          const dy =
+            (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+          const pctX = ((e.clientX - rect.left) / rect.width) * 100;
+          const pctY = ((e.clientY - rect.top) / rect.height) * 100;
+          card.style.setProperty("--cmx", `${pctX}%`);
+          card.style.setProperty("--cmy", `${pctY}%`);
+          gsap.to(card, {
+            rotateY: dx * 12,
+            rotateX: -dy * 12,
+            transformPerspective: 900,
+            duration: 0.35,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        });
+
+        card.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            rotateY: 0,
+            rotateX: 0,
+            duration: 0.7,
+            ease: "elastic.out(1, 0.45)",
+            overwrite: "auto",
+          });
+        });
+      });
+
       return () => {
         window.removeEventListener("mousemove", handleMouseMove);
       };
@@ -490,6 +606,45 @@ export default function HeroLanding() {
               />
             </svg>
           </button>
+        </div>
+      </section>
+
+      {/* ── Divider ── */}
+      <div className="section-divider" />
+
+      {/* ── Creators ── */}
+      <section className="creators-section">
+        <div className="creators-heading-wrap">
+          <span className="creators-label">The team</span>
+          <h2 className="creators-title-text">Crafted by</h2>
+        </div>
+        <div className="creators-grid">
+          {CREATORS.map((c, i) => (
+            <a
+              key={i}
+              className="creator-card"
+              href={c.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="creator-avatar-ring">
+                <img className="creator-avatar" src={c.avatar} alt={c.name} />
+              </div>
+              <span className="creator-name">{c.name}</span>
+              <span className="creator-handle">{c.handle}</span>
+              <div className="creator-github-btn">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+                View Profile
+              </div>
+            </a>
+          ))}
         </div>
       </section>
     </div>

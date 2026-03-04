@@ -7,6 +7,7 @@ import {
   getDateRangeForYear,
   formatHeaderDate,
 } from "../../utils/dateHelpers";
+import { IconPlus } from "../icons/Icons";
 import AppHeader from "../layout/AppHeader";
 import LoadingSpinner from "../layout/LoadingSpinner";
 import HabitList from "../habits/HabitList";
@@ -203,7 +204,7 @@ export default function MainAppUI() {
   return (
     <div className="app-shell">
       <div ref={headerRef}>
-        <AppHeader onAddHabit={() => setShowForm(true)} />
+        <AppHeader />
       </div>
 
       <div className="app-body">
@@ -216,9 +217,17 @@ export default function MainAppUI() {
                 <span className="panel-title">Today's Habits</span>
                 <span className="panel-title-sub">— {formatHeaderDate()}</span>
               </div>
-              <span className="panel-header-count">
-                {doneTodayCount} / {totalHabits} done
-              </span>
+              <div className="panel-header-actions">
+                <span className="panel-header-count">
+                  {doneTodayCount} / {totalHabits} done
+                </span>
+                <button
+                  className="btn-add-habit"
+                  onClick={() => setShowForm(true)}
+                >
+                  <IconPlus size={12} /> Add Habit
+                </button>
+              </div>
             </div>
 
             <div className="tasks-body">

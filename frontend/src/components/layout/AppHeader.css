@@ -4,6 +4,7 @@
 
 .app-header {
   flex-shrink: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,37 +14,7 @@
   background: var(--surface);
 }
 
-.app-header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.back-button {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-2);
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--dur-fast) var(--ease);
-}
-
-.back-button:hover {
-  background: var(--surface-3);
-  border-color: var(--border);
-  color: var(--text);
-  transform: translateX(-2px);
-}
-
-.back-button:active {
-  transform: translateX(0);
-}
-
+/* ── Logo ── */
 .app-logo {
   display: flex;
   align-items: center;
@@ -71,22 +42,111 @@
   color: var(--text);
 }
 
+/* ── Centre date ── */
 .app-header-date {
   font-size: 12.5px;
   color: var(--text-3);
   font-weight: 500;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.btn-add-habit {
+/* ── Right zone ── */
+.app-header-right {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
+  gap: 10px;
+}
+
+/* Sign-in button — shown when logged out */
+.btn-sign-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #0c0c0f;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border: none;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  box-shadow:
+    0 0 0 1px rgba(74, 222, 128, 0.25),
+    0 2px 8px rgba(74, 222, 128, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sign-in::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.16) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.btn-sign-in:hover {
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(74, 222, 128, 0.35),
+    0 4px 14px rgba(74, 222, 128, 0.28);
+}
+
+.btn-sign-in:active {
+  transform: translateY(0);
+}
+
+/* ── Left zone (back button + logo) ── */
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+  flex-shrink: 0;
+}
+
+.back-button:hover {
+  background: var(--surface-2, rgba(255,255,255,0.05));
+  border-color: var(--border);
+  color: var(--text);
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: translateX(0);
+}
+
+/* ── Add Habit (now lives in panel header) ── */
+.btn-add-habit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   background: var(--accent-glow);
   border: 1px solid var(--accent-border);
   color: var(--accent);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   transition: background var(--dur-fast) var(--ease),
     box-shadow var(--dur-fast) var(--ease),
@@ -94,7 +154,7 @@
 }
 
 .btn-add-habit:hover {
-  background: rgba(74, 222, 128, 0.16);
+  background: rgba(74, 222, 128, 0.14);
   box-shadow: var(--shadow-glow);
   transform: translateY(-1px);
 }
