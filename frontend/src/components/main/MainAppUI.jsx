@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { gsap } from "gsap";
 import { apiFetch } from "../../utils/api";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   todayStr,
   getDateRange365,
@@ -77,10 +78,20 @@ export default function MainAppUI() {
     }
   }, []);
 
+  const { user, loading: authLoading } = useAuth();
+
   useEffect(() => {
+    // Wait until Firebase auth is resolved. If there's no signed-in user,
+    // do not call the protected API endpoints — stay on the page and allow
+    // the header's Sign in button to open the auth modal.
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     refresh().finally(() => setLoading(false));
-  }, [refresh]);
+  }, [refresh, authLoading, user]);
 
   // ── Entrance animation ─────────────────────────────────────
   useEffect(() => {
