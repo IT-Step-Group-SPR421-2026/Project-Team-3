@@ -16,7 +16,9 @@ class HabitSerializer(ModelSerializer):
             "created_at",
             "current_streak",
             "longest_streak",
+            "user_id",
         )
+        read_only_fields = ("user_id",)
 
     def get_current_streak(self, obj):
         return obj.current_streak()
@@ -30,7 +32,8 @@ class CheckInSerializer(ModelSerializer):
 
     class Meta:
         model = CheckIn
-        fields = ("id", "habit", "date", "created_at", "color")
+        fields = ("id", "habit", "date", "created_at", "color", "user_id")
+        read_only_fields = ("user_id",)
 
     def get_color(self, obj):
         return obj.color()

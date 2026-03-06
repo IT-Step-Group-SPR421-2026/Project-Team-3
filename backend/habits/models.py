@@ -4,6 +4,8 @@ from django.utils import timezone
 
 
 class Habit(models.Model):
+    # Firebase UID of the owning user
+    user_id = models.CharField(max_length=128, db_index=True, blank=True, default="")
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -61,6 +63,8 @@ def get_color_for_count(count: int) -> str:
 
 
 class CheckIn(models.Model):
+    # Denormalized user id to quickly filter per-user checkins
+    user_id = models.CharField(max_length=128, db_index=True, blank=True, default="")
     habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name="checkins")
     date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
