@@ -69,6 +69,16 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip() for origin in _cors_origins.split(",") if origin.strip()
 ]
 
+# REST framework: use Firebase authentication by default (can be overridden)
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "config.firebase_auth.FirebaseAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ],
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -140,6 +150,22 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+
+# Logging – show Firebase auth debug messages in the console
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "config.firebase_auth": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+    },
+}
 
 
 # Static files (CSS, JavaScript, Images)

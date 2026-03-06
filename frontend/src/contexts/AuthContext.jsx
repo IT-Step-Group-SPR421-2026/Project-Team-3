@@ -39,7 +39,12 @@ export function AuthProvider({ children }) {
 
   const resetPassword = (email) => sendPasswordResetEmail(auth, email);
 
-  const logout = () => signOut(auth);
+  const logout = async () => {
+    await signOut(auth);
+    // Force a full reload so any in-memory state (habits, checkins) is cleared
+    // and the app initializes as an unauthenticated user.
+    window.location.reload();
+  };
 
   return (
     <AuthContext.Provider

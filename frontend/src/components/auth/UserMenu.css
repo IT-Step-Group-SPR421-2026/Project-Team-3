@@ -57,6 +57,14 @@
   z-index: 50;
 }
 
+/* When rendered in a portal we position fixed on the viewport and
+   use inline top/right styles calculated from the avatar button. */
+.user-menu-dropdown.portal {
+  position: fixed;
+  z-index: 10001;
+  min-width: 200px;
+}
+
 /* ── User info ── */
 .user-menu-info {
   padding: 12px 14px 10px;
