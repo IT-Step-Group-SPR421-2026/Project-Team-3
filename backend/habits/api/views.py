@@ -12,6 +12,49 @@ from .serializers import CheckInSerializer, HabitSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
+def get_rank_for_xp(xp_total: int):
+    """Return (rank_name, xp_to_next_rank) for a given total XP.
+
+    xp_to_next_rank is the additional XP required to reach the next rank.
+    If already at the highest rank, xp_to_next_rank will be 0.
+    """
+    # thresholds: (min_xp, name)
+    thresholds = [
+        (0, "Seedling"),
+        (100, "Sprout"),
+        (250, "Routine"),
+        (500, "Steady"),
+        (800, "Ritual"),
+        (1200, "Disciplined"),
+        (1700, "Resilient"),
+        (2300, "Consistent"),
+        (3000, "Focused"),
+        (4000, "Mastery"),
+    ]
+
+    # find current rank (largest min_xp <= xp_total)
+    current = thresholds[0]
+    for t in thresholds:
+        if xp_total >= t[0]:
+            current = t
+        else:
+            break
+
+    # find next threshold
+    next_threshold = None
+    for t in thresholds:
+        if t[0] > current[0]:
+            next_threshold = t
+            break
+
+    if next_threshold is None:
+        xp_to_next = 0
+    else:
+        xp_to_next = max(0, next_threshold[0] - xp_total)
+
+    return current[1], xp_to_next
+
+
 class HabitViewSet(ModelViewSet):
     # provide a fallback queryset so DRF's router can infer a basename
     queryset = Habit.objects.none()
@@ -212,3 +255,18 @@ def stats(request):
             **buckets,
         }
     )
+
+
+@api_view(["GET"])
+def xp(request):
+    """Return XP summary for the authenticated user.
+
+    Response: { xp_total: int, rank: str, next_rank_xp: int }
+    """
+    uid = getattr(request.user, "uid", None)
+    if not uid:
+        return Response({"detail": "Authentication required"}, status=401)
+
+    stats, _ = UserStats.objects.get_or_create(user_id=uid)
+    rank_name, xp_to_next = get_rank_for_xp(stats.xp_total)
+    return Response({"xp_total": stats.xp_total, "rank": rank_name, "next_rank_xp": xp_to_next})
