@@ -7,11 +7,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import CheckIn, Habit, get_color_for_count
+from ..models import CheckIn, Habit, UserStats, get_color_for_count
 from .serializers import CheckInSerializer, HabitSerializer
 from rest_framework.permissions import IsAuthenticated
-
-
 
 
 class HabitViewSet(ModelViewSet):
@@ -20,7 +18,7 @@ class HabitViewSet(ModelViewSet):
     serializer_class = HabitSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self): # type: ignore
+    def get_queryset(self):  # type: ignore
         uid = getattr(self.request.user, "uid", None)
         if not uid:
             return Habit.objects.none()
@@ -38,7 +36,7 @@ class CheckInViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     http_method_names = ["get", "post", "delete", "head", "options"]
 
-    def get_queryset(self): # type: ignore
+    def get_queryset(self):  # type: ignore
         uid = getattr(self.request.user, "uid", None)
         if not uid:
             return CheckIn.objects.none()
@@ -52,7 +50,25 @@ class CheckInViewSet(ModelViewSet):
             from rest_framework.exceptions import PermissionDenied
 
             raise PermissionDenied("Cannot add checkin for a habit you do not own")
-        serializer.save(user_id=uid)
+        checkin = serializer.save(user_id=uid)
+
+        # Award XP for this check-in (base + streak milestones)
+        stats, _ = UserStats.objects.get_or_create(user_id=uid)
+        base_xp = 10
+        bonus = 0
+        milestones = {
+            5: 20,
+            10: 40,
+            20: 80,
+            50: 200,
+            100: 500,
+            150: 800,
+            200: 1000,
+        }
+        streak = habit.current_streak()
+        bonus = milestones.get(streak, 0)
+        stats.xp_total += base_xp + bonus
+        stats.save(update_fields=["xp_total", "updated_at"])
 
 
 @api_view(["GET"])
@@ -159,7 +175,7 @@ def stats(request):
         # compute span from whichever comes first, habit creation or first checkin, up to today
         today = timezone.localdate()
         start_date = habit.created_at.date()
-        first = habit.checkins.order_by("date").values_list("date", flat=True).first() # type: ignore
+        first = habit.checkins.order_by("date").values_list("date", flat=True).first()  # type: ignore
         if first and first < start_date:
             start_date = first
         days = (today - start_date).days + 1
@@ -167,15 +183,17 @@ def stats(request):
 
         buckets = build_buckets(habit.checkins.all())  # type: ignore
 
-        return Response({
-            "scope": "habit",
-            "habit_id": habit.id,  # type: ignore
-            "total_completed": total,
-            "completion_percentage": percentage,
-            "current_streak": habit.current_streak(),
-            "longest_streak": habit.longest_streak(),
-            **buckets,
-        })
+        return Response(
+            {
+                "scope": "habit",
+                "habit_id": habit.id,  # type: ignore
+                "total_completed": total,
+                "completion_percentage": percentage,
+                "current_streak": habit.current_streak(),
+                "longest_streak": habit.longest_streak(),
+                **buckets,
+            }
+        )
 
     # global stats (no habit_id)
     uid = getattr(request.user, "uid", None)
@@ -186,9 +204,11 @@ def stats(request):
     total_completed = qs.count()
     buckets = build_buckets(qs)
 
-    return Response({
-        "scope": "global",
-        "total_completed": total_completed,
-        "habits_count": Habit.objects.filter(user_id=uid).count(),
-        **buckets,
-    })
+    return Response(
+        {
+            "scope": "global",
+            "total_completed": total_completed,
+            "habits_count": Habit.objects.filter(user_id=uid).count(),
+            **buckets,
+        }
+    )

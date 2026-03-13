@@ -15,7 +15,7 @@ class Habit(models.Model):
         return f"Habit: {self.name}"
 
     def current_streak(self):
-        dates = set(self.checkins.order_by("-date").values_list("date", flat=True)) # type: ignore
+        dates = set(self.checkins.order_by("-date").values_list("date", flat=True))  # type: ignore
         if not dates:
             return 0
 
@@ -28,7 +28,7 @@ class Habit(models.Model):
 
     def longest_streak(self):
         dates_qs = self.checkins.order_by("date").values_list("date", flat=True)  # type: ignore
-        dates = list(dict.fromkeys(dates_qs))  
+        dates = list(dict.fromkeys(dates_qs))
         if not dates:
             return 0
 
@@ -90,3 +90,13 @@ class CheckIn(models.Model):
     def color(self):
 
         return self.__class__.color_for_date(self.date)
+
+
+class UserStats(models.Model):
+    # Firebase UID
+    user_id = models.CharField(max_length=128, unique=True, db_index=True)
+    xp_total = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"UserStats({self.user_id})"
