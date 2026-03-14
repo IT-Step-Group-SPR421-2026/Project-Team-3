@@ -10,6 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from ..models import CheckIn, Habit, UserStats, get_color_for_count
 from .serializers import CheckInSerializer, HabitSerializer
 from rest_framework.permissions import IsAuthenticated
+from firebase_admin import auth as firebase_auth
 
 
 def get_rank_for_xp(xp_total: int):
@@ -96,7 +97,18 @@ class CheckInViewSet(ModelViewSet):
         checkin = serializer.save(user_id=uid)
 
         # Award XP for this check-in (base + streak milestones)
-        stats, _ = UserStats.objects.get_or_create(user_id=uid)
+        stats, created = UserStats.objects.get_or_create(user_id=uid)
+        
+        # Save display name from the token if available
+        name_from_token = getattr(self.request.user, "name", None)
+        if not name_from_token:
+            email_from_token = getattr(self.request.user, "email", None)
+            if email_from_token and "@" in email_from_token:
+                name_from_token = email_from_token.split("@")[0]
+
+        if name_from_token:
+            stats.display_name = name_from_token
+
         base_xp = 10
         bonus = 0
         milestones = {
@@ -111,7 +123,7 @@ class CheckInViewSet(ModelViewSet):
         streak = habit.current_streak()
         bonus = milestones.get(streak, 0)
         stats.xp_total += base_xp + bonus
-        stats.save(update_fields=["xp_total", "updated_at"])
+        stats.save(update_fields=["xp_total", "display_name", "updated_at"])
 
 
 @api_view(["GET"])
@@ -296,9 +308,32 @@ def leaderboard(request):
     results = []
     for entry in top:
         rank_name, _ = get_rank_for_xp(entry.xp_total)
+        
+        # Provide a fallback display name: try to use the stored display name,
+        # otherwise fetch their email from Firebase SDK,
+        # and as a last resort fall back to the masked UID string.
+        display = entry.display_name
+        if not display and entry.user_id:
+            try:
+                fb_user = firebase_auth.get_user(entry.user_id)
+                display = fb_user.display_name
+                if not display and fb_user.email:
+                    display = fb_user.email.split("@")[0]
+                
+                # Optimistically save it to avoid hitting Firebase again
+                if display:
+                    entry.display_name = display
+                    entry.save(update_fields=["display_name"])
+            except Exception:
+                pass
+                
+        if not display:
+            display = f"User {entry.user_id[:6]}..." if entry.user_id else "Unknown User"
+            
         results.append(
             {
                 "user_id": entry.user_id,
+                "display_name": display,
                 "xp_total": entry.xp_total,
                 "rank": rank_name,
             }

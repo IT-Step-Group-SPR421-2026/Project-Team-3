@@ -95,6 +95,7 @@ class CheckIn(models.Model):
 class UserStats(models.Model):
     # Firebase UID
     user_id = models.CharField(max_length=128, unique=True, db_index=True)
+    display_name = models.CharField(max_length=255, blank=True, default="")
     xp_total = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
