@@ -269,4 +269,39 @@ def xp(request):
 
     stats, _ = UserStats.objects.get_or_create(user_id=uid)
     rank_name, xp_to_next = get_rank_for_xp(stats.xp_total)
-    return Response({"xp_total": stats.xp_total, "rank": rank_name, "next_rank_xp": xp_to_next})
+    return Response(
+        {"xp_total": stats.xp_total, "rank": rank_name, "next_rank_xp": xp_to_next}
+    )
+
+
+@api_view(["GET"])
+def leaderboard(request):
+    """Return top users by XP.
+
+    Query params:
+        limit - optional max number of results (default 10, max 50)
+    """
+    limit_str = request.GET.get("limit", "10")
+    try:
+        limit = int(limit_str)
+    except ValueError:
+        return Response({"detail": "limit must be an integer"}, status=400)
+
+    if limit < 1:
+        return Response({"detail": "limit must be >= 1"}, status=400)
+    if limit > 50:
+        limit = 50
+
+    top = UserStats.objects.order_by("-xp_total", "user_id")[:limit]
+    results = []
+    for entry in top:
+        rank_name, _ = get_rank_for_xp(entry.xp_total)
+        results.append(
+            {
+                "user_id": entry.user_id,
+                "xp_total": entry.xp_total,
+                "rank": rank_name,
+            }
+        )
+
+    return Response({"count": len(results), "results": results})
