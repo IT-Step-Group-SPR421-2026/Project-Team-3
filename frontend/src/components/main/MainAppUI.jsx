@@ -16,6 +16,7 @@ import AddHabitModal from "../habits/AddHabitModal";
 import EditHabitModal from "../habits/EditHabitModal";
 import StatsPanel from "../stats/StatsPanel";
 import Heatmap from "../heatmap/Heatmap";
+import Leaderboard from "../leaderboard/Leaderboard";
 import "../shared/Panel.css";
 import "./MainAppUI.css";
 
@@ -23,6 +24,8 @@ export default function MainAppUI() {
   const [habits, setHabits] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [heatmapData, setHeatmapData] = useState([]);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [currentUserXp, setCurrentUserXp] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,22 +38,30 @@ export default function MainAppUI() {
   const todayRef = useRef(null);
   const statsRef = useRef(null);
   const heatmapRef = useRef(null);
+  const leaderboardRef = useRef(null);
 
   // ── Data fetching ──────────────────────────────────────────
   const refresh = useCallback(async () => {
     const { fromStr, toStr } = getDateRange365();
 
     try {
-      const [h, c, hm, st] = await Promise.all([
+      const [h, c, hm, st, lb, xp] = await Promise.all([
         apiFetch("/habits/"),
         apiFetch("/checkins/"),
         apiFetch(`/heatmap/?from=${fromStr}&to=${toStr}`),
         apiFetch("/stats/"),
+        apiFetch("/leaderboard/"),
+        apiFetch("/xp/"),
       ]);
       setHabits(h);
       setCheckins(c);
       setHeatmapData(hm);
       setStats(st);
+      
+      // The leaderboard endpoint returns { count, results }
+      setLeaderboardData(lb.results || []);
+      setCurrentUserXp(xp);
+      
       setError(null);
     } catch (err) {
       console.error("Failed to fetch data:", err);
@@ -100,7 +111,8 @@ export default function MainAppUI() {
     tl.from(headerRef.current, { y: -20, opacity: 0, duration: 0.45 })
       .from(todayRef.current, { y: 24, opacity: 0, duration: 0.5 }, "-=0.25")
       .from(statsRef.current, { y: 24, opacity: 0, duration: 0.5 }, "-=0.38")
-      .from(heatmapRef.current, { y: 16, opacity: 0, duration: 0.45 }, "-=0.3");
+      .from(heatmapRef.current, { y: 16, opacity: 0, duration: 0.45 }, "-=0.3")
+      .from(leaderboardRef.current, { y: 16, opacity: 0, duration: 0.45 }, "-=0.25");
   }, [loading]);
 
   // ── Derived state ──────────────────────────────────────────
@@ -273,6 +285,16 @@ export default function MainAppUI() {
             heatmapData={heatmapData}
             onYearChange={fetchHeatmapForYear}
             loading={heatmapLoading}
+          />
+        </div>
+
+        {/* Leaderboard */}
+        <div ref={leaderboardRef}>
+          <Leaderboard 
+            leaderboardData={leaderboardData} 
+            currentUserXp={currentUserXp}
+            currentUserId={user?.uid}
+            loading={loading}
           />
         </div>
       </div>

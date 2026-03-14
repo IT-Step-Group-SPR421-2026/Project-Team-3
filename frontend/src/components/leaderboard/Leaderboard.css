@@ -1,0 +1,190 @@
+/* ============================================================
+   LEADERBOARD COMPONENT
+   ============================================================ */
+
+.leaderboard-section {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.leaderboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.leaderboard-card-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.leaderboard-user-xp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  background: var(--surface-2);
+  padding: 4px 12px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+}
+
+.user-xp-label {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.user-xp-value {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.user-xp-divider {
+  color: var(--border);
+}
+
+.user-xp-total {
+  color: var(--text-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard-content {
+  padding: 16px 20px;
+}
+
+.leaderboard-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: var(--text-3);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.leaderboard-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: lb-spin 0.8s linear infinite;
+}
+
+@keyframes lb-spin {
+  to { transform: rotate(360deg); }
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.leaderboard-item:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+  transform: translateX(2px);
+}
+
+.leaderboard-item.is-current-user {
+  background: var(--surface-2);
+  border-color: var(--accent-border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 0 0 1px var(--accent-glow);
+}
+
+.leaderboard-item.is-current-user:hover {
+  background: var(--surface-3);
+}
+
+.lb-rank-num {
+  width: 32px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-align: center;
+  margin-right: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lb-user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lb-user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-you-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--accent);
+  background: var(--accent-glow);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--accent-border);
+}
+
+.lb-tier-badge {
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  width: max-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lb-xp-total {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  margin-left: 16px;
+}
+
+.lb-xp-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  margin-left: 2px;
+}
