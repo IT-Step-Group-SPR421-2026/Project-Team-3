@@ -3,15 +3,41 @@ import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { useAuth } from "../../contexts/AuthContext";
+import { apiFetch } from "../../utils/api";
+import SubscriptionModal from "../subscription/SubscriptionModal";
 import "./UserMenu.css";
 
 export default function UserMenu() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const containerRef = useRef(null); // wrapper in-flow
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loadingSubscription, setLoadingSubscription] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const containerRef = useRef(null);
   const buttonRef = useRef(null);
-  const portalRef = useRef(null); // the portal DOM node for dropdown
+  const portalRef = useRef(null);
   const [pos, setPos] = useState({ top: 0, right: 0 });
+
+  // Fetch subscription status when menu opens
+  useEffect(() => {
+    if (!open || !user) return;
+
+    const fetchSubscription = async () => {
+      try {
+        setLoadingSubscription(true);
+        const data = await apiFetch("/subscriptions/status/");
+        setSubscriptionStatus(data);
+      } catch (err) {
+        console.error("Failed to fetch subscription status:", err);
+        setSubscriptionStatus(null);
+      } finally {
+        setLoadingSubscription(false);
+      }
+    };
+
+    fetchSubscription();
+  }, [open, user]);
 
   // Close on outside click
   useEffect(() => {
@@ -71,6 +97,11 @@ export default function UserMenu() {
     navigate("/", { replace: true });
   };
 
+  const handleUpgradeClick = () => {
+    setOpen(false);
+    setShowSubscriptionModal(true);
+  };
+
   return (
     <div className="user-menu" ref={containerRef}>
       <button
@@ -102,6 +133,79 @@ export default function UserMenu() {
               <span className="user-menu-name">{displayName}</span>
               <span className="user-menu-email">{user?.email}</span>
             </div>
+
+            {/* Subscription Status Section */}
+            <div className="user-menu-divider" />
+            <div className="user-menu-subscription">
+              {loadingSubscription ? (
+                <div className="subscription-loading">
+                  <span className="subscription-label">Loading subscription...</span>
+                </div>
+              ) : subscriptionStatus && subscriptionStatus.is_active ? (
+                <div className="subscription-active">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                  <div className="subscription-info-text">
+                    <span className="subscription-label">Premium Active</span>
+                    <span className="subscription-detail">Unlimited habits</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="subscription-free">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <div className="subscription-info-text">
+                    <span className="subscription-label">Free Tier</span>
+                    <span className="subscription-detail">5 habits limit</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {!subscriptionStatus?.is_active && (
+              <>
+                <div className="user-menu-divider" />
+                <button
+                  className="user-menu-item upgrade"
+                  onClick={handleUpgradeClick}
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <polyline points="19 12 12 19 5 12" />
+                  </svg>
+                  Upgrade to Premium
+                </button>
+              </>
+            )}
+
             <div className="user-menu-divider" />
             <button className="user-menu-item danger" onClick={handleLogout}>
               <svg
@@ -123,6 +227,16 @@ export default function UserMenu() {
           </div>,
           document.body,
         )}
+
+      {showSubscriptionModal && (
+        <SubscriptionModal
+          onClose={() => setShowSubscriptionModal(false)}
+          onSuccess={() => {
+            // Refresh subscription status
+            setSubscriptionStatus(null);
+          }}
+        />
+      )}
     </div>
   );
 }

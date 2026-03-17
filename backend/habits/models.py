@@ -101,3 +101,23 @@ class UserStats(models.Model):
 
     def __str__(self):
         return f"UserStats({self.user_id})"
+
+
+class Subscription(models.Model):
+    """
+    Tracks one-time permanent subscription for users
+    Transaction hash stored for verification on-chain
+    """
+    # Firebase UID of the user
+    user_id = models.CharField(max_length=128, unique=True, db_index=True)
+    # Wallet address that made the purchase
+    wallet_address = models.CharField(max_length=42, unique=True, db_index=True)
+    # Transaction hash of the payment (proof on blockchain)
+    tx_hash = models.CharField(max_length=66, unique=True, db_index=True)
+    # Whether subscription is active (local cache)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Subscription({self.user_id}, active={self.is_active})"
