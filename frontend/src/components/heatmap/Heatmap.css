@@ -217,6 +217,7 @@
 .heatmap-cell:hover {
   transform: scale(1.45);
   z-index: 2;
+  filter: grayscale(0.35) brightness(1.05);
 }
 
 .heatmap-cell-empty {
@@ -243,6 +244,14 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* Top rows are close to the card header. Show tooltip below those cells
+   so it doesn't get visually clipped by the header area. */
+.heatmap-week-col > .heatmap-cell:nth-child(1)[data-tooltip]:hover::after,
+.heatmap-week-col > .heatmap-cell:nth-child(2)[data-tooltip]:hover::after {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+
 /* ── Legend ──────────────────────────────────────────────── */
 .heatmap-legend {
   display: flex;
@@ -264,188 +273,15 @@
   border-radius: 3px;
 }
 
+@media (max-width: 920px) {
+  .heatmap-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 
-.heatmap-section {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.heatmap-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.heatmap-card-title {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.01em;
-}
-
-.heatmap-content {
-  padding: 20px 24px 18px;
-}
-
-/* Scroll container — centers when content fits, scrolls when it doesn't.
-   Using text-align: center + inline-block avoids the flex-centering bug
-   where overflow clips the left side and breaks the left→right scroll. */
-.heatmap-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 4px;
-  text-align: center;
-}
-
-.heatmap-inner {
-  display: inline-block;
-  text-align: left;
-  min-width: max-content;
-}
-
-/* ── Column-based grid layout ───────────────────────────── */
-
-/* Outer row: [day-labels col] + [weeks area] */
-.heatmap-grid-wrap {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: flex-start;
-}
-
-/* Day labels column — sits flush with the cell rows */
-.heatmap-day-col {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding-top: 19px; /* push down below the month label row (16px height + 3px gap) */
-}
-
-.heatmap-day-label {
-  width: 24px;
-  height: 13px;
-  font-size: 10px;
-  color: var(--text-3);
-  font-weight: 500;
-  text-align: right;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
-}
-
-/* Weeks area: month row stacked above week columns */
-.heatmap-weeks-area {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-/* Month label row — each slot is exactly cell-width wide */
-.heatmap-months-row {
-  display: flex;
-  flex-direction: row;
-  gap: 3px;
-  height: 16px;
-}
-
-.heatmap-month-slot {
-  width: 13px;
-  font-size: 11px;
-  color: var(--text-3);
-  font-weight: 500;
-  flex-shrink: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  overflow: visible;
-  white-space: nowrap;
-}
-
-/* Week columns — explicit row direction: oldest week left → today right */
-.heatmap-weeks-cols {
-  display: flex;
-  flex-direction: row;
-  gap: 3px;
-}
-
-.heatmap-week-col {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-/* ── Cells ──────────────────────────────────────────────── */
-
-.heatmap-cell {
-  width: 13px;
-  height: 13px;
-  border-radius: 2px;
-  flex-shrink: 0;
-  cursor: default;
-  transition: transform var(--dur-fast) var(--ease);
-  position: relative;
-}
-
-.heatmap-cell:hover {
-  transform: scale(1.4);
-  z-index: 2;
-}
-
-.heatmap-cell-empty {
-  visibility: hidden;
-}
-
-/* ── Tooltip ─────────────────────────────────────────────── */
-.heatmap-cell[data-tooltip]:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  background: var(--surface-3);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  padding: 5px 9px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  pointer-events: none;
-  z-index: 100;
-  box-shadow: var(--shadow-lg);
-}
-
-/* ── Legend ──────────────────────────────────────────────── */
-.heatmap-legend {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 14px;
-  justify-content: flex-end;
-}
-
-.heatmap-legend-label {
-  font-size: 11px;
-  color: var(--text-3);
-  font-weight: 500;
-}
-
-.heatmap-legend-cell {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  cursor: help;
-  transition: transform var(--dur-fast) var(--ease);
-}
-
-.heatmap-legend-cell:hover {
-  transform: scale(1.3);
+  .heatmap-content {
+    padding: 18px 16px 16px;
+  }
 }
 

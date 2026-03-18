@@ -1,0 +1,129 @@
+{
+  "header": {
+    "backHome": "Back to home",
+    "signIn": "Sign in",
+    "language": "Language"
+  },
+  "dashboard": {
+    "errorTitle": "Something went wrong",
+    "errorMessage": "Failed to load data. Please check your connection and try again.",
+    "tryAgain": "Try again",
+    "todayHabits": "Today's Habits",
+    "doneCount": "{{done}} / {{total}} done",
+    "addHabit": "Add Habit",
+    "stats": "Stats"
+  },
+  "stats": {
+    "bestActiveStreak": "Best active streak",
+    "days": "{{count}} days",
+    "keepGoing": "Keep it going!",
+    "startStreak": "Start a streak today",
+    "completedToday": "Completed today",
+    "habitsDone": "habits done",
+    "allTimeTotal": "All-time total",
+    "completions": "completions",
+    "totalHabits": "Total habits",
+    "tracked": "tracked",
+    "thisWeek": "This week",
+    "checkIns": "check-ins",
+    "activityTrend": "Activity trend",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "noWeeklyData": "No weekly data yet",
+    "noMonthlyData": "No monthly data yet"
+  },
+  "heatmap": {
+    "title": "Activity Heatmap",
+    "last365": "Last 365 days",
+    "loading": "Loading...",
+    "empty": "No activity data yet. Start completing habits to see your heatmap!",
+    "less": "Less",
+    "more": "More",
+    "tooltip": "{{date}} · {{count}} habit",
+    "tooltip_other": "{{date}} · {{count}} habits",
+    "legend": "{{label}} habits per day"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "yourRank": "Your Rank:",
+    "loading": "Loading ranks...",
+    "empty": "No leaderboard data available yet.",
+    "unknownUser": "Unknown User",
+    "you": "YOU",
+    "xp": "XP"
+  },
+  "auth": {
+    "close": "Close",
+    "title": "Welcome to Habitflow",
+    "subtitle": "Sign in to start tracking your habits",
+    "continueGoogle": "Continue with Google",
+    "errorCancelled": "Sign-in was cancelled.",
+    "errorTooMany": "Too many attempts. Please try again later.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "hero": {
+    "badge": "Now available — free to use",
+    "subtitleLine1": "Build better habits, one day at a time.",
+    "subtitleLine2": "Track your progress with clean, beautiful insights.",
+    "getStarted": "Get Started",
+    "scroll": "Scroll to explore",
+    "features": {
+      "heatmap": {
+        "title": "Heatmap Tracking",
+        "desc": "Visualize your consistency with GitHub-style heatmaps"
+      },
+      "streaks": {
+        "title": "Streaks",
+        "desc": "Build momentum and watch your streaks grow daily"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "desc": "Weekly & monthly deep-dive insights on your habits"
+      }
+    },
+    "stats": {
+      "daysTracked": {
+        "label": "Days Tracked",
+        "desc": "Build consistency that lasts"
+      },
+      "moreLikely": {
+        "label": "More Likely",
+        "desc": "Users who stick to their habits"
+      },
+      "possibilities": {
+        "label": "Possibilities",
+        "desc": "Create unlimited habits"
+      }
+    },
+    "startToday": "Start today",
+    "transformTitle": "Ready to transform your habits?",
+    "startJourney": "Start Your Journey",
+    "team": "The team",
+    "craftedBy": "Crafted by",
+    "viewProfile": "View Profile",
+    "journey": {
+      "kicker": "How Habitflow Works",
+      "title": "A simple loop that compounds your discipline",
+      "subtitle": "Log it, see it, repeat it. Every check-in makes your next action easier.",
+      "panelTitle": "Designed for momentum",
+      "panelDesc": "Habitflow turns scattered effort into a visible rhythm with streak pressure, progress heat, and weekly reflection in one place.",
+      "proof1": "1-minute daily check-in",
+      "proof2": "Visual streak pressure",
+      "proof3": "Weekly trend feedback",
+      "steps": {
+        "capture": {
+          "title": "Capture the action",
+          "desc": "Check off habits in seconds so consistency is frictionless."
+        },
+        "consistency": {
+          "title": "Build visible consistency",
+          "desc": "Watch your heatmap and streaks fill up and stay accountable."
+        },
+        "momentum": {
+          "title": "Compound momentum",
+          "desc": "Use trend insight to refine your routine and lock progress in."
+        }
+      }
+    }
+  }
+}

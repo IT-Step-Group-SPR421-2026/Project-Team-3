@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import CheckIn, Habit, UserStats, get_color_for_count
+from ..models import CheckIn, Habit, UserStats, XpEvent, get_color_for_count
 from .serializers import CheckInSerializer, HabitSerializer
 from rest_framework.permissions import IsAuthenticated
 from firebase_admin import auth as firebase_auth
@@ -107,7 +107,11 @@ class CheckInViewSet(ModelViewSet):
             raise PermissionDenied("Cannot add checkin for a habit you do not own")
         checkin = serializer.save(user_id=uid)
 
-        # Award XP for this check-in (base + streak milestones)
+        # Award XP once per habit/day (base + streak milestones)
+        xp_event, xp_created = XpEvent.objects.get_or_create(
+            user_id=uid, habit=habit, date=checkin.date
+        )
+
         stats, created = UserStats.objects.get_or_create(user_id=uid)
         
         # Save display name from the token if available
@@ -120,20 +124,21 @@ class CheckInViewSet(ModelViewSet):
         if name_from_token:
             stats.display_name = name_from_token
 
-        base_xp = 10
-        bonus = 0
-        milestones = {
-            5: 20,
-            10: 40,
-            20: 80,
-            50: 200,
-            100: 500,
-            150: 800,
-            200: 1000,
-        }
-        streak = habit.current_streak()
-        bonus = milestones.get(streak, 0)
-        stats.xp_total += base_xp + bonus
+        if xp_created:
+            base_xp = 10
+            milestones = {
+                5: 20,
+                10: 40,
+                20: 80,
+                50: 200,
+                100: 500,
+                150: 800,
+                200: 1000,
+            }
+            streak = habit.current_streak()
+            bonus = milestones.get(streak, 0)
+            stats.xp_total += base_xp + bonus
+
         stats.save(update_fields=["xp_total", "display_name", "updated_at"])
 
 

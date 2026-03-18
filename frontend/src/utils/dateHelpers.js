@@ -7,8 +7,8 @@ export function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export function formatHeaderDate() {
-  return new Date().toLocaleDateString("en-US", {
+export function formatHeaderDate(locale = "en-US") {
+  return new Date().toLocaleDateString(locale, {
     weekday: "short",
     month: "long",
     day: "numeric",
@@ -16,8 +16,8 @@ export function formatHeaderDate() {
   });
 }
 
-export function formatFull(dateStr) {
-  return new Date(dateStr + "T12:00:00").toLocaleDateString("en-US", {
+export function formatFull(dateStr, locale = "en-US") {
+  return new Date(dateStr + "T12:00:00").toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",

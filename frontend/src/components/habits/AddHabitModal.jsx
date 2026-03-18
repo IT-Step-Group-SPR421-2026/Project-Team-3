@@ -75,8 +75,10 @@ export default function AddHabitModal({ onClose, onCreated }) {
         <h2 className="modal-title">New Habit</h2>
         <form onSubmit={handleSubmit}>
           {error && (
-            <div className={`form-error ${error.isLimitError ? "has-action" : ""}`}>
-              <div className="error-message">{error.message}</div>
+            <div
+              className={`form-error ${error.isLimitError ? "has-action" : ""}`}
+            >
+              <div className="form-error-message">{error.message}</div>
               {error.isLimitError && (
                 <button
                   type="button"

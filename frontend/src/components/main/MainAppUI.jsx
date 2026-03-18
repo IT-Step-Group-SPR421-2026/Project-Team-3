@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { gsap } from "gsap";
+import { useTranslation } from "react-i18next";
 import { apiFetch } from "../../utils/api";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -8,6 +9,7 @@ import {
   getDateRangeForYear,
   formatHeaderDate,
 } from "../../utils/dateHelpers";
+import { getDateLocale } from "../../utils/locale";
 import { IconPlus } from "../icons/Icons";
 import AppHeader from "../layout/AppHeader";
 import LoadingSpinner from "../layout/LoadingSpinner";
@@ -21,6 +23,7 @@ import "../shared/Panel.css";
 import "./MainAppUI.css";
 
 export default function MainAppUI() {
+  const { t, i18n } = useTranslation();
   const [habits, setHabits] = useState([]);
   const [checkins, setCheckins] = useState([]);
   const [heatmapData, setHeatmapData] = useState([]);
@@ -40,6 +43,9 @@ export default function MainAppUI() {
   const heatmapRef = useRef(null);
   const leaderboardRef = useRef(null);
 
+  const { user, loading: authLoading } = useAuth();
+  const locale = getDateLocale(i18n.resolvedLanguage);
+
   // ── Data fetching ──────────────────────────────────────────
   const refresh = useCallback(async () => {
     const { fromStr, toStr } = getDateRange365();
@@ -57,19 +63,14 @@ export default function MainAppUI() {
       setCheckins(c);
       setHeatmapData(hm);
       setStats(st);
-      
-      // The leaderboard endpoint returns { count, results }
       setLeaderboardData(lb.results || []);
       setCurrentUserXp(xp);
-      
       setError(null);
     } catch (err) {
       console.error("Failed to fetch data:", err);
-      setError(
-        "Failed to load data. Please check your connection and try again.",
-      );
+      setError(t("dashboard.errorMessage"));
     }
-  }, []);
+  }, [t]);
 
   const fetchHeatmapForYear = useCallback(async (yearOrLast365) => {
     setHeatmapLoading(true);
@@ -89,20 +90,20 @@ export default function MainAppUI() {
     }
   }, []);
 
-  const { user, loading: authLoading } = useAuth();
-
   useEffect(() => {
-    // Wait until Firebase auth is resolved. If there's no signed-in user,
-    // do not call the protected API endpoints — stay on the page and allow
-    // the header's Sign in button to open the auth modal.
+    // Wait for Firebase to finish restoring session on hard refresh.
+    // Calling protected endpoints before this resolves can return 401.
     if (authLoading) return;
+
     if (!user) {
       setLoading(false);
+      setError(null);
       return;
     }
+
     setLoading(true);
     refresh().finally(() => setLoading(false));
-  }, [refresh, authLoading, user]);
+  }, [authLoading, user, refresh]);
 
   // ── Entrance animation ─────────────────────────────────────
   useEffect(() => {
@@ -112,7 +113,11 @@ export default function MainAppUI() {
       .from(todayRef.current, { y: 24, opacity: 0, duration: 0.5 }, "-=0.25")
       .from(statsRef.current, { y: 24, opacity: 0, duration: 0.5 }, "-=0.38")
       .from(heatmapRef.current, { y: 16, opacity: 0, duration: 0.45 }, "-=0.3")
-      .from(leaderboardRef.current, { y: 16, opacity: 0, duration: 0.45 }, "-=0.25");
+      .from(
+        leaderboardRef.current,
+        { y: 16, opacity: 0, duration: 0.45 },
+        "-=0.25",
+      );
   }, [loading]);
 
   // ── Derived state ──────────────────────────────────────────
@@ -205,7 +210,7 @@ export default function MainAppUI() {
       <div className="app-shell">
         <div className="error-container">
           <div className="error-icon">⚠️</div>
-          <h2 className="error-title">Something went wrong</h2>
+          <h2 className="error-title">{t("dashboard.errorTitle")}</h2>
           <p className="error-message">{error}</p>
           <button
             className="error-retry-btn"
@@ -215,7 +220,7 @@ export default function MainAppUI() {
               refresh().finally(() => setLoading(false));
             }}
           >
-            Try again
+            {t("dashboard.tryAgain")}
           </button>
         </div>
       </div>
@@ -231,24 +236,30 @@ export default function MainAppUI() {
       </div>
 
       <div className="app-body">
-        {/* Top grid: Tasks | Stats */}
-        <div className="top-grid">
+        <div className="dashboard-grid">
           {/* Today's Habits */}
-          <div className="panel-card" ref={todayRef}>
+          <div className="panel-card today-panel-card" ref={todayRef}>
             <div className="panel-header">
               <div>
-                <span className="panel-title">Today's Habits</span>
-                <span className="panel-title-sub">— {formatHeaderDate()}</span>
+                <span className="panel-title">
+                  {t("dashboard.todayHabits")}
+                </span>
+                <span className="panel-title-sub">
+                  — {formatHeaderDate(locale)}
+                </span>
               </div>
               <div className="panel-header-actions">
                 <span className="panel-header-count">
-                  {doneTodayCount} / {totalHabits} done
+                  {t("dashboard.doneCount", {
+                    done: doneTodayCount,
+                    total: totalHabits,
+                  })}
                 </span>
                 <button
                   className="btn-add-habit"
                   onClick={() => setShowForm(true)}
                 >
-                  <IconPlus size={12} /> Add Habit
+                  <IconPlus size={12} /> {t("dashboard.addHabit")}
                 </button>
               </div>
             </div>
@@ -266,9 +277,9 @@ export default function MainAppUI() {
           </div>
 
           {/* Stats */}
-          <div className="panel-card" ref={statsRef}>
+          <div className="panel-card stats-panel-card" ref={statsRef}>
             <div className="panel-header">
-              <span className="panel-title">Stats</span>
+              <span className="panel-title">{t("dashboard.stats")}</span>
             </div>
             <StatsPanel
               maxCurrentStreak={maxCurrentStreak}
@@ -277,25 +288,28 @@ export default function MainAppUI() {
               stats={stats}
             />
           </div>
-        </div>
 
-        {/* Heatmap */}
-        <div ref={heatmapRef}>
-          <Heatmap
-            heatmapData={heatmapData}
-            onYearChange={fetchHeatmapForYear}
-            loading={heatmapLoading}
-          />
-        </div>
+          {/* Heatmap */}
+          <div ref={heatmapRef} className="dashboard-wide-col heatmap-slot">
+            <Heatmap
+              heatmapData={heatmapData}
+              onYearChange={fetchHeatmapForYear}
+              loading={heatmapLoading}
+            />
+          </div>
 
-        {/* Leaderboard */}
-        <div ref={leaderboardRef}>
-          <Leaderboard 
-            leaderboardData={leaderboardData} 
-            currentUserXp={currentUserXp}
-            currentUserId={user?.uid}
-            loading={loading}
-          />
+          {/* Leaderboard */}
+          <div
+            ref={leaderboardRef}
+            className="dashboard-wide-col leaderboard-slot"
+          >
+            <Leaderboard
+              leaderboardData={leaderboardData}
+              currentUserXp={currentUserXp}
+              currentUserId={user?.uid}
+              loading={loading}
+            />
+          </div>
         </div>
       </div>
 
