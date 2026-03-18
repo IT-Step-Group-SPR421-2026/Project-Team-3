@@ -127,6 +127,7 @@ class Subscription(models.Model):
     Tracks one-time permanent subscription for users
     Transaction hash stored for verification on-chain
     """
+
     # Firebase UID of the user
     user_id = models.CharField(max_length=128, unique=True, db_index=True)
     # Wallet address that made the purchase

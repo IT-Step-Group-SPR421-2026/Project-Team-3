@@ -70,17 +70,17 @@ class HabitViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         uid = getattr(self.request.user, "uid", None)
-        
+
         # Check subscription limits
         from ..subscription_service import get_subscription_service
         from rest_framework.exceptions import ValidationError
-        
+
         service = get_subscription_service()
         can_create, reason = service.can_create_habit(uid or "")
-        
+
         if not can_create:
             raise ValidationError({"detail": reason})
-        
+
         serializer.save(user_id=uid or "")
 
 
@@ -113,7 +113,7 @@ class CheckInViewSet(ModelViewSet):
         )
 
         stats, created = UserStats.objects.get_or_create(user_id=uid)
-        
+
         # Save display name from the token if available
         name_from_token = getattr(self.request.user, "name", None)
         if not name_from_token:
@@ -324,7 +324,7 @@ def leaderboard(request):
     results = []
     for entry in top:
         rank_name, _ = get_rank_for_xp(entry.xp_total)
-        
+
         # Provide a fallback display name: try to use the stored display name,
         # otherwise fetch their email from Firebase SDK,
         # and as a last resort fall back to the masked UID string.
@@ -335,17 +335,19 @@ def leaderboard(request):
                 display = fb_user.display_name
                 if not display and fb_user.email:
                     display = fb_user.email.split("@")[0]
-                
+
                 # Optimistically save it to avoid hitting Firebase again
                 if display:
                     entry.display_name = display
                     entry.save(update_fields=["display_name"])
             except Exception:
                 pass
-                
+
         if not display:
-            display = f"User {entry.user_id[:6]}..." if entry.user_id else "Unknown User"
-            
+            display = (
+                f"User {entry.user_id[:6]}..." if entry.user_id else "Unknown User"
+            )
+
         results.append(
             {
                 "user_id": entry.user_id,
