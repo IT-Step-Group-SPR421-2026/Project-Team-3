@@ -70,6 +70,17 @@ class HabitViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         uid = getattr(self.request.user, "uid", None)
+        
+        # Check subscription limits
+        from ..subscription_service import get_subscription_service
+        from rest_framework.exceptions import ValidationError
+        
+        service = get_subscription_service()
+        can_create, reason = service.can_create_habit(uid or "")
+        
+        if not can_create:
+            raise ValidationError({"detail": reason})
+        
         serializer.save(user_id=uid or "")
 
 

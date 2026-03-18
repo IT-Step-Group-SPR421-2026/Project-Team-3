@@ -97,6 +97,51 @@
   margin: 0;
 }
 
+/* ── Subscription Section ── */
+.user-menu-subscription {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.subscription-loading,
+.subscription-active,
+.subscription-free {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--text-2);
+}
+
+.subscription-active {
+  color: var(--success, #4ade80);
+}
+
+.subscription-free {
+  color: var(--text-3);
+}
+
+.subscription-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.subscription-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: inherit;
+}
+
+.subscription-detail {
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.8;
+}
+
 /* ── Menu items ── */
 .user-menu-item {
   width: 100%;
@@ -126,4 +171,14 @@
 .user-menu-item.danger:hover {
   background: var(--danger-bg);
   color: var(--danger);
+}
+
+.user-menu-item.upgrade {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.user-menu-item.upgrade:hover {
+  background: rgba(74, 222, 128, 0.08);
+  color: var(--accent);
 }

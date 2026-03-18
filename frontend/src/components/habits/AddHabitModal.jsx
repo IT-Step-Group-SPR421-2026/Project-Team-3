@@ -6,6 +6,7 @@ import "./AddHabitModal.css";
 export default function AddHabitModal({ onClose, onCreated }) {
   const [form, setForm] = useState({ name: "", description: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const modalRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -22,6 +23,7 @@ export default function AddHabitModal({ onClose, onCreated }) {
     e.preventDefault();
     if (!form.name.trim()) return;
     setSubmitting(true);
+    setError(null);
     try {
       // Backend assigns color automatically based on number of habits
       await apiFetch("/habits/", {
@@ -30,6 +32,22 @@ export default function AddHabitModal({ onClose, onCreated }) {
       });
       onCreated();
     } catch (err) {
+      const errorMessage = err.message || "Failed to add habit";
+      // Check if it's a subscription limit error
+      if (
+        errorMessage.includes("Free tier limited") ||
+        errorMessage.includes("habit limit")
+      ) {
+        setError({
+          message: errorMessage,
+          isLimitError: true,
+        });
+      } else {
+        setError({
+          message: errorMessage,
+          isLimitError: false,
+        });
+      }
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -56,6 +74,24 @@ export default function AddHabitModal({ onClose, onCreated }) {
       >
         <h2 className="modal-title">New Habit</h2>
         <form onSubmit={handleSubmit}>
+          {error && (
+            <div className={`form-error ${error.isLimitError ? "has-action" : ""}`}>
+              <div className="error-message">{error.message}</div>
+              {error.isLimitError && (
+                <button
+                  type="button"
+                  className="error-action-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("Navigate to upgrade");
+                  }}
+                >
+                  Upgrade to Premium →
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">Name</label>
             <input
