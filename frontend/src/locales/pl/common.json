@@ -1,0 +1,129 @@
+{
+  "header": {
+    "backHome": "Wróć do strony głównej",
+    "signIn": "Zaloguj się",
+    "language": "Język"
+  },
+  "dashboard": {
+    "errorTitle": "Coś poszło nie tak",
+    "errorMessage": "Nie udało się załadować danych. Sprawdź połączenie i spróbuj ponownie.",
+    "tryAgain": "Spróbuj ponownie",
+    "todayHabits": "Dzisiejsze nawyki",
+    "doneCount": "{{done}} / {{total}} ukończono",
+    "addHabit": "Dodaj nawyk",
+    "stats": "Statystyki"
+  },
+  "stats": {
+    "bestActiveStreak": "Najlepsza aktywna passa",
+    "days": "{{count}} dni",
+    "keepGoing": "Tak trzymaj!",
+    "startStreak": "Rozpocznij passę już dziś",
+    "completedToday": "Ukończono dziś",
+    "habitsDone": "ukończonych nawyków",
+    "allTimeTotal": "Łącznie",
+    "completions": "ukończeń",
+    "totalHabits": "Łącznie nawyków",
+    "tracked": "śledzonych",
+    "thisWeek": "W tym tygodniu",
+    "checkIns": "check-inów",
+    "activityTrend": "Trend aktywności",
+    "weekly": "Tygodniowo",
+    "monthly": "Miesięcznie",
+    "noWeeklyData": "Brak danych tygodniowych",
+    "noMonthlyData": "Brak danych miesięcznych"
+  },
+  "heatmap": {
+    "title": "Mapa aktywności",
+    "last365": "Ostatnie 365 dni",
+    "loading": "Ładowanie...",
+    "empty": "Brak danych aktywności. Uzupełniaj nawyki, aby zobaczyć mapę!",
+    "less": "Mniej",
+    "more": "Więcej",
+    "tooltip": "{{date}} · {{count}} nawyk",
+    "tooltip_other": "{{date}} · {{count}} nawyki",
+    "legend": "{{label}} nawyków dziennie"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "yourRank": "Twój poziom:",
+    "loading": "Ładowanie rankingu...",
+    "empty": "Brak danych rankingu.",
+    "unknownUser": "Nieznany użytkownik",
+    "you": "TY",
+    "xp": "XP"
+  },
+  "auth": {
+    "close": "Zamknij",
+    "title": "Witamy w Habitflow",
+    "subtitle": "Zaloguj się, aby zacząć śledzić nawyki",
+    "continueGoogle": "Kontynuuj z Google",
+    "errorCancelled": "Logowanie zostało anulowane.",
+    "errorTooMany": "Zbyt wiele prób. Spróbuj ponownie później.",
+    "errorGeneric": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "hero": {
+    "badge": "Dostępne teraz — bezpłatne",
+    "subtitleLine1": "Buduj lepsze nawyki, dzień po dniu.",
+    "subtitleLine2": "Śledź postępy dzięki czytelnym i pięknym statystykom.",
+    "getStarted": "Zacznij",
+    "scroll": "Przewiń, aby odkryć",
+    "features": {
+      "heatmap": {
+        "title": "Śledzenie mapą",
+        "desc": "Wizualizuj regularność mapą w stylu GitHub"
+      },
+      "streaks": {
+        "title": "Passy",
+        "desc": "Buduj tempo i wydłużaj passy każdego dnia"
+      },
+      "analytics": {
+        "title": "Analityka",
+        "desc": "Tygodniowe i miesięczne wglądy w twoje nawyki"
+      }
+    },
+    "stats": {
+      "daysTracked": {
+        "label": "Dni śledzenia",
+        "desc": "Buduj konsekwencję na długo"
+      },
+      "moreLikely": {
+        "label": "Większa szansa",
+        "desc": "Użytkownicy częściej trzymają się nawyków"
+      },
+      "possibilities": {
+        "label": "Możliwości",
+        "desc": "Twórz nielimitowaną liczbę nawyków"
+      }
+    },
+    "startToday": "Zacznij dziś",
+    "transformTitle": "Gotowy, by zmienić swoje nawyki?",
+    "startJourney": "Rozpocznij swoją drogę",
+    "team": "Zespół",
+    "craftedBy": "Stworzone przez",
+    "viewProfile": "Zobacz profil",
+    "journey": {
+      "kicker": "Jak działa Habitflow",
+      "title": "Prosta pętla, która wzmacnia Twoją dyscyplinę",
+      "subtitle": "Zapisz, zobacz, powtórz. Każdy check-in ułatwia kolejne działanie.",
+      "panelTitle": "Zaprojektowane pod momentum",
+      "panelDesc": "Habitflow zamienia rozproszone wysiłki w widoczny rytm: passy, hitmapa i tygodniowy przegląd w jednym miejscu.",
+      "proof1": "1-minutowy check-in dziennie",
+      "proof2": "Widoczna presja passy",
+      "proof3": "Tygodniowy feedback trendu",
+      "steps": {
+        "capture": {
+          "title": "Zarejestruj działanie",
+          "desc": "Odhaczaj nawyki w kilka sekund i usuń tarcie z codziennej rutyny."
+        },
+        "consistency": {
+          "title": "Buduj widoczną regularność",
+          "desc": "Wypełniaj hitmapę i passy, aby utrzymać odpowiedzialność."
+        },
+        "momentum": {
+          "title": "Wzmacniaj rozpęd",
+          "desc": "Korzystaj z trendów, by doskonalić rytm i utrwalać postęp."
+        }
+      }
+    }
+  }
+}

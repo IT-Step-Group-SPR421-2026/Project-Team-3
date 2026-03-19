@@ -1,0 +1,287 @@
+/* ============================================================
+   HEATMAP COMPONENT
+   ============================================================ */
+
+.heatmap-section {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.heatmap-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.heatmap-card-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.heatmap-year-selector {
+  display: flex;
+  gap: 6px;
+}
+
+.year-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.year-btn:hover {
+  color: var(--text-2);
+  border-color: var(--border);
+  background: var(--surface-3);
+}
+
+.year-btn.active {
+  color: var(--accent);
+  background: var(--accent-glow);
+  border-color: var(--accent-border);
+}
+
+.year-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.heatmap-content {
+  padding: 24px 28px 20px;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.heatmap-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.heatmap-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.heatmap-empty-text {
+  font-size: 14px;
+  color: var(--text-3);
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* ── Loading state ───────────────────────────────────────── */
+.heatmap-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  gap: 16px;
+}
+
+.heatmap-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.heatmap-loading-text {
+  font-size: 13px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+/* Scroll container: text-align trick centers inline-block child
+   without breaking left-edge overflow scrolling */
+.heatmap-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  text-align: center;
+}
+
+.heatmap-inner {
+  display: inline-block;
+  text-align: left;
+  min-width: max-content;
+}
+
+/* ── Column-based grid layout ───────────────────────────── */
+
+/* Outer row: [day-labels col] + [weeks area] */
+.heatmap-grid-wrap {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+/* Day labels column — padded below the month row */
+.heatmap-day-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;            /* must match GAP */
+  padding-top: 22px;   /* month row height (16px) + gap (6px) */
+}
+
+.heatmap-day-label {
+  width: 26px;
+  height: 14px;        /* must match CELL */
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 500;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
+}
+
+/* Weeks area: month row stacked above week columns */
+.heatmap-weeks-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Month label row — relatively positioned so each label can be
+   absolutely positioned with computed left + width for true centering */
+.heatmap-months-row {
+  position: relative;
+  height: 16px;
+}
+
+.heatmap-month-slot {
+  position: absolute;
+  top: 0;
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+/* Week columns */
+.heatmap-weeks-cols {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;            /* must match GAP */
+}
+
+.heatmap-week-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;            /* must match GAP */
+}
+
+/* ── Cells ──────────────────────────────────────────────── */
+
+.heatmap-cell {
+  width: 14px;         /* must match CELL */
+  height: 14px;        /* must match CELL */
+  border-radius: 3px;
+  flex-shrink: 0;
+  cursor: default;
+  transition: transform var(--dur-fast) var(--ease);
+  position: relative;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.45);
+  z-index: 2;
+  filter: grayscale(0.35) brightness(1.05);
+}
+
+.heatmap-cell-empty {
+  visibility: hidden;
+}
+
+/* ── Tooltip ─────────────────────────────────────────────── */
+.heatmap-cell[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+
+/* Top rows are close to the card header. Show tooltip below those cells
+   so it doesn't get visually clipped by the header area. */
+.heatmap-week-col > .heatmap-cell:nth-child(1)[data-tooltip]:hover::after,
+.heatmap-week-col > .heatmap-cell:nth-child(2)[data-tooltip]:hover::after {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+
+/* ── Legend ──────────────────────────────────────────────── */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+.heatmap-legend-label {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.heatmap-legend-cell {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+}
+
+@media (max-width: 920px) {
+  .heatmap-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .heatmap-content {
+    padding: 18px 16px 16px;
+  }
+}
+

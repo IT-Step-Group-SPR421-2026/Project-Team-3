@@ -1,0 +1,129 @@
+{
+  "header": {
+    "backHome": "Zur Startseite",
+    "signIn": "Anmelden",
+    "language": "Sprache"
+  },
+  "dashboard": {
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "errorMessage": "Daten konnten nicht geladen werden. Bitte Verbindung prüfen und erneut versuchen.",
+    "tryAgain": "Erneut versuchen",
+    "todayHabits": "Heutige Gewohnheiten",
+    "doneCount": "{{done}} / {{total}} erledigt",
+    "addHabit": "Gewohnheit hinzufügen",
+    "stats": "Statistik"
+  },
+  "stats": {
+    "bestActiveStreak": "Beste aktive Serie",
+    "days": "{{count}} Tage",
+    "keepGoing": "Weiter so!",
+    "startStreak": "Starte heute eine Serie",
+    "completedToday": "Heute erledigt",
+    "habitsDone": "Gewohnheiten erledigt",
+    "allTimeTotal": "Gesamt",
+    "completions": "Abschlüsse",
+    "totalHabits": "Gewohnheiten gesamt",
+    "tracked": "verfolgt",
+    "thisWeek": "Diese Woche",
+    "checkIns": "Check-ins",
+    "activityTrend": "Aktivitätstrend",
+    "weekly": "Wöchentlich",
+    "monthly": "Monatlich",
+    "noWeeklyData": "Noch keine Wochendaten",
+    "noMonthlyData": "Noch keine Monatsdaten"
+  },
+  "heatmap": {
+    "title": "Aktivitäts-Heatmap",
+    "last365": "Letzte 365 Tage",
+    "loading": "Wird geladen...",
+    "empty": "Noch keine Aktivitätsdaten. Erledige Gewohnheiten, um deine Heatmap zu sehen!",
+    "less": "Weniger",
+    "more": "Mehr",
+    "tooltip": "{{date}} · {{count}} Gewohnheit",
+    "tooltip_other": "{{date}} · {{count}} Gewohnheiten",
+    "legend": "{{label}} Gewohnheiten pro Tag"
+  },
+  "leaderboard": {
+    "title": "Rangliste",
+    "yourRank": "Dein Rang:",
+    "loading": "Ränge werden geladen...",
+    "empty": "Noch keine Ranglistendaten verfügbar.",
+    "unknownUser": "Unbekannter Nutzer",
+    "you": "DU",
+    "xp": "XP"
+  },
+  "auth": {
+    "close": "Schließen",
+    "title": "Willkommen bei Habitflow",
+    "subtitle": "Melde dich an, um deine Gewohnheiten zu verfolgen",
+    "continueGoogle": "Mit Google fortfahren",
+    "errorCancelled": "Anmeldung wurde abgebrochen.",
+    "errorTooMany": "Zu viele Versuche. Bitte später erneut versuchen.",
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+  },
+  "hero": {
+    "badge": "Jetzt verfügbar — kostenlos nutzbar",
+    "subtitleLine1": "Baue bessere Gewohnheiten, Tag für Tag.",
+    "subtitleLine2": "Verfolge deinen Fortschritt mit klaren, schönen Einblicken.",
+    "getStarted": "Loslegen",
+    "scroll": "Scrollen zum Entdecken",
+    "features": {
+      "heatmap": {
+        "title": "Heatmap-Tracking",
+        "desc": "Visualisiere deine Beständigkeit mit Heatmaps im GitHub-Stil"
+      },
+      "streaks": {
+        "title": "Serien",
+        "desc": "Baue Momentum auf und verlängere deine Serien täglich"
+      },
+      "analytics": {
+        "title": "Analysen",
+        "desc": "Wöchentliche und monatliche Deep-Dive-Einblicke zu deinen Gewohnheiten"
+      }
+    },
+    "stats": {
+      "daysTracked": {
+        "label": "Getrackte Tage",
+        "desc": "Beständigkeit aufbauen, die bleibt"
+      },
+      "moreLikely": {
+        "label": "Wahrscheinlicher",
+        "desc": "Nutzer bleiben eher an Gewohnheiten dran"
+      },
+      "possibilities": {
+        "label": "Möglichkeiten",
+        "desc": "Erstelle unbegrenzt Gewohnheiten"
+      }
+    },
+    "startToday": "Starte heute",
+    "transformTitle": "Bereit, deine Gewohnheiten zu verändern?",
+    "startJourney": "Starte deine Reise",
+    "team": "Das Team",
+    "craftedBy": "Entwickelt von",
+    "viewProfile": "Profil ansehen",
+    "journey": {
+      "kicker": "So funktioniert Habitflow",
+      "title": "Ein einfacher Loop, der deine Disziplin verstärkt",
+      "subtitle": "Eintragen, sehen, wiederholen. Jeder Check-in macht die nächste Aktion leichter.",
+      "panelTitle": "Für Momentum gebaut",
+      "panelDesc": "Habitflow verwandelt verstreute Anstrengung in einen sichtbaren Rhythmus aus Serien, Heatmap und Wochenrückblick.",
+      "proof1": "1-Minuten-Check-in pro Tag",
+      "proof2": "Sichtbarer Serien-Druck",
+      "proof3": "Wöchentliches Trend-Feedback",
+      "steps": {
+        "capture": {
+          "title": "Aktion erfassen",
+          "desc": "Hake Gewohnheiten in Sekunden ab, damit Konstanz mühelos bleibt."
+        },
+        "consistency": {
+          "title": "Sichtbare Konstanz aufbauen",
+          "desc": "Fülle deine Heatmap und Serien und bleib verbindlich dran."
+        },
+        "momentum": {
+          "title": "Momentum ausbauen",
+          "desc": "Nutze Trenddaten, um deine Routine zu verbessern und Fortschritt zu sichern."
+        }
+      }
+    }
+  }
+}
