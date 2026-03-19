@@ -16,27 +16,32 @@
 
 </div>
 
-🚀 A GitHub-style contributions calendar for daily habits.
+🚀 A GitHub-style contributions calendar for daily habits with streaks, heatmap, stats, and XP.
 
-## ✨ Goals
+## ✨ Core Features
 
-- Create habits
-- Mark daily check-ins
-- See a heatmap calendar
-- Track streaks
-- View simple stats
+- Habit CRUD + daily check-ins
+- Heatmap calendar (per-day counts + color)
+- Streaks (current + longest)
+- Stats (weekly + monthly buckets)
+- XP + ranks
+- Global leaderboard
+- Firebase Auth (Google sign-in)
+- Premium subscription check (blockchain verification)
 
 ## 🧰 Tech Stack
 
 - Frontend: React (Vite)
 - Backend: Django + Django REST Framework
 - API: JSON only
-- Auth (planned): Firebase Auth
+- Auth: Firebase Auth
+- Web3: Hardhat + Sepolia contract
 
 ## 📦 Project Structure
 
 - backend/ — Django API
 - frontend/ — React app
+- hardhat/ — smart contract + deployment artifacts
 
 ## 🧪 Local Dev (quick)
 
@@ -44,42 +49,21 @@
 2. Start React dev server
 3. Confirm API at http://127.0.0.1:8000/api/habits/
 
-## 🗺️ 4-Week Development Plan
+## 🔌 API Summary
 
-### Week 1 — Foundations
+- /api/habits/ (CRUD)
+- /api/checkins/ (GET/POST/DELETE)
+- /api/heatmap/?from=YYYY-MM-DD&to=YYYY-MM-DD
+- /api/stats/ (global) or /api/stats/?habit_id=
+- /api/xp/
+- /api/leaderboard/
+- /api/subscriptions/ (status, register, info)
 
-- Align on scope, user stories, and data model (Habit, CheckIn)
-- Define API contracts (endpoints, payloads, response shapes)
-- Set up base UI layout and design tokens
-- Wire backend + frontend connection test
-- Prepare development workflow (branching, PRs, code review)
+## 🔐 Auth
 
-### Week 2 — Core Features
-
-- Habit creation form and list UI
-- Daily check-in flow (create/check-in)
-- Basic streak calculation in API response
-- Heatmap data shape defined
-
-### Week 3 — Visualization + Stats
-
-- Heatmap calendar UI
-- Streak display in UI
-- Simple stats (total check-ins, best streak)
-- Empty/edge state UX polish
-
-### Week 4 — Auth + Polish
-
-- Firebase Auth integration (email/password)
-- Per-user data separation
-- Basic loading/error states
-- Final QA and cleanup
-
-## 🔐 Auth Plan (Firebase)
-
-We plan to add Firebase Auth for a simple, reliable login flow.
-Target is Week 4 after core features are stable.
+- Firebase Auth is integrated.
+- Backend uses Firebase ID tokens via `Authorization: Bearer <token>`.
 
 ## ✅ Status
 
-Ready for team development. The project is intentionally minimal to keep onboarding easy.
+Ready for team development and staging deployment. Set production env vars before AWS deploy.
