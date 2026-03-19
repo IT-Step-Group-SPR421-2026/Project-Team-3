@@ -425,6 +425,8 @@ body:has(.landing) {
   isolation: isolate;
   transition: border-color 0.28s ease;
   will-change: transform;
+  cursor: default;
+  user-select: none;
 }
 
 /* Subtle gradient shimmer on hover */
@@ -739,6 +741,8 @@ body:has(.landing) {
     border-color 0.28s ease,
     box-shadow 0.28s ease;
   overflow: hidden;
+  cursor: default;
+  user-select: none;
 }
 
 /* Top radial glow */
@@ -818,6 +822,169 @@ body:has(.landing) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   JOURNEY SECTION
+   ══════════════════════════════════════════════════════════════ */
+
+.journey-section {
+  position: relative;
+  z-index: 2;
+  padding: 88px 40px 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+.journey-head {
+  max-width: 760px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journey-kicker {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--accent);
+}
+
+.journey-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.8vw, 48px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.journey-subtitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+.journey-grid {
+  width: 100%;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.journey-panel {
+  background:
+    radial-gradient(ellipse 72% 45% at 50% 0%, rgba(74, 222, 128, 0.08), transparent 70%),
+    var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 30px 28px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: default;
+  user-select: none;
+}
+
+.journey-panel-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.journey-panel-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-2);
+}
+
+.journey-proof-row {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.journey-proof-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  background: var(--accent-glow);
+  user-select: none;
+}
+
+.journey-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.journey-step {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 16px 16px 15px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  cursor: default;
+  user-select: none;
+}
+
+.journey-step:hover {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.2) inset;
+}
+
+.journey-step-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  font-size: 18px;
+}
+
+.journey-step-copy h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.journey-step-copy p {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-3);
+  min-height: 40px;
+}
+
+/* ══════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════ */
 
@@ -875,6 +1042,33 @@ body:has(.landing) {
 
   .section-divider {
     margin: 0 24px;
+  }
+
+  .journey-section {
+    padding: 62px 24px 78px;
+    gap: 24px;
+  }
+
+  .journey-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    max-width: 420px;
+  }
+
+  .journey-steps {
+    width: 100%;
+  }
+
+  .journey-step-copy p {
+    min-height: 0;
+  }
+
+  .journey-panel {
+    padding: 22px 18px;
+  }
+
+  .journey-proof-row {
+    gap: 6px;
   }
 }
 

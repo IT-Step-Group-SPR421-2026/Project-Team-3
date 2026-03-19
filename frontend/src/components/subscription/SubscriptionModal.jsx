@@ -32,8 +32,12 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
   const [price] = useState("0.005");
 
   const { registerSubscription } = useSubscription();
-  const { connectWallet, account, isConnected, connectWallet: connect } =
-    useWallet();
+  const {
+    connectWallet,
+    account,
+    isConnected,
+    connectWallet: connect,
+  } = useWallet();
 
   const modalRef = useRef(null);
   const paymentInitiatedRef = useRef(false);
@@ -58,15 +62,17 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         CONTRACT_ABI,
-        signer
+        signer,
       );
 
       // Check balance
       const balance = await provider.getBalance(account);
       const valueInEth = ethers.parseEther(price);
-      
+
       if (balance < valueInEth) {
-        throw new Error(`Insufficient balance. Need ${price} ETH, have ${ethers.formatEther(balance)} ETH`);
+        throw new Error(
+          `Insufficient balance. Need ${price} ETH, have ${ethers.formatEther(balance)} ETH`,
+        );
       }
 
       console.log("Sending payment:", {
@@ -87,7 +93,7 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
 
       // Wait for confirmation
       const receipt = await tx.wait();
-      
+
       if (!receipt) {
         throw new Error("Transaction failed - no receipt");
       }
@@ -120,7 +126,7 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
     gsap.fromTo(
       modalRef.current,
       { opacity: 0, y: 20, scale: 0.95 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out" }
+      { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out" },
     );
   }, []);
 
@@ -157,36 +163,48 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
   };
 
   return createPortal(
-    <div className="modal-overlay" onClick={handleClose}>
+    <div className="subscription-overlay" onClick={handleClose}>
       <div
-        className="modal subscription-modal"
+        className="subscription-modal"
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
       >
         {step === "info" && (
           <>
-            <h2 className="modal-title">Upgrade to Premium</h2>
-            <div className="subscription-info">
-              <div className="info-section">
+            <h2 className="subscription-title">Upgrade to Premium</h2>
+            <div className="subscription-content">
+              <div className="subscription-info-card">
                 <h3>Premium Features</h3>
                 <ul>
-                  <li>✓ Unlimited habits</li>
-                  <li>✓ Advanced analytics</li>
-                  <li>✓ Priority support</li>
+                  <li>
+                    <span>Unlimited habits</span>
+                  </li>
+                  <li>
+                    <span>Advanced analytics</span>
+                  </li>
+                  <li>
+                    <span>Priority support</span>
+                  </li>
                 </ul>
               </div>
 
-              <div className="price-section">
-                <p className="price-label">One-time payment</p>
-                <p className="price-value">{price} ETH</p>
-                <p className="price-note">No recurring charges</p>
+              <div className="subscription-price-card">
+                <p className="subscription-price-label">One-time payment</p>
+                <p className="subscription-price-value">{price} ETH</p>
+                <p className="subscription-price-note">No recurring charges</p>
               </div>
 
-              <div className="modal-actions">
-                <button className="btn-secondary" onClick={handleClose}>
+              <div className="subscription-actions">
+                <button
+                  className="subscription-btn subscription-btn-secondary"
+                  onClick={handleClose}
+                >
                   Cancel
                 </button>
-                <button className="btn-primary" onClick={() => setStep("connect")}>
+                <button
+                  className="subscription-btn subscription-btn-primary"
+                  onClick={() => setStep("connect")}
+                >
                   Continue to Payment
                 </button>
               </div>
@@ -196,20 +214,23 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
 
         {step === "connect" && (
           <>
-            <h2 className="modal-title">Connect Wallet</h2>
-            <div className="wallet-section">
-              <p className="section-text">
+            <h2 className="subscription-title">Connect Wallet</h2>
+            <div className="subscription-wallet-section">
+              <p className="subscription-section-text">
                 Connect your MetaMask wallet to proceed with payment
               </p>
 
-              {error && <div className="error-message">{error}</div>}
+              {error && <div className="subscription-error">{error}</div>}
 
-              <div className="modal-actions">
-                <button className="btn-secondary" onClick={handleClose}>
+              <div className="subscription-actions">
+                <button
+                  className="subscription-btn subscription-btn-secondary"
+                  onClick={handleClose}
+                >
                   Cancel
                 </button>
                 <button
-                  className="btn-primary"
+                  className="subscription-btn subscription-btn-primary"
                   onClick={handleConnect}
                   disabled={loading}
                 >
@@ -222,17 +243,20 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
 
         {step === "paying" && (
           <>
-            <h2 className="modal-title">Processing Payment</h2>
-            <div className="paying-section">
+            <h2 className="subscription-title">Processing Payment</h2>
+            <div className="subscription-paying-section">
               {error ? (
                 <>
-                  <div className="error-message">{error}</div>
-                  <div className="modal-actions">
-                    <button className="btn-secondary" onClick={handleClose}>
+                  <div className="subscription-error">{error}</div>
+                  <div className="subscription-actions">
+                    <button
+                      className="subscription-btn subscription-btn-secondary"
+                      onClick={handleClose}
+                    >
                       Cancel
                     </button>
                     <button
-                      className="btn-primary"
+                      className="subscription-btn subscription-btn-primary"
                       onClick={() => {
                         setError(null);
                         paymentInitiatedRef.current = false;
@@ -246,14 +270,14 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
                 </>
               ) : (
                 <>
-                  <div className="spinner"></div>
-                  <p className="section-text">
+                  <div className="subscription-spinner"></div>
+                  <p className="subscription-section-text">
                     {txHash
                       ? "Confirming transaction..."
                       : "Check MetaMask to confirm payment..."}
                   </p>
                   {txHash && (
-                    <p className="tx-hash">
+                    <p className="subscription-tx-hash">
                       TX: {txHash.slice(0, 10)}...{txHash.slice(-8)}
                     </p>
                   )}
@@ -265,13 +289,13 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
 
         {step === "success" && (
           <>
-            <h2 className="modal-title">✓ Payment Successful!</h2>
-            <div className="success-section">
-              <div className="success-icon">✓</div>
-              <p className="section-text">
+            <h2 className="subscription-title">Payment Successful</h2>
+            <div className="subscription-success-section">
+              <div className="subscription-success-icon">✓</div>
+              <p className="subscription-section-text">
                 You now have unlimited habits and premium features!
               </p>
-              <p className="tx-hash">
+              <p className="subscription-tx-hash">
                 TX: {txHash?.slice(0, 10)}...{txHash?.slice(-8)}
               </p>
             </div>
@@ -279,6 +303,6 @@ export default function SubscriptionModal({ onClose, onSuccess }) {
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { gsap } from "gsap";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { IconLeaf } from "../icons/Icons";
 import "./AuthModal.css";
 
 export default function AuthModal({ onClose }) {
+  const { t } = useTranslation();
   const { signInGoogle } = useAuth();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -44,11 +46,11 @@ export default function AuthModal({ onClose }) {
       onClose();
     } catch (err) {
       const map = {
-        "auth/popup-closed-by-user": "Sign-in was cancelled.",
-        "auth/too-many-requests": "Too many attempts. Please try again later.",
-        "auth/cancelled-popup-request": "Sign-in was cancelled.",
+        "auth/popup-closed-by-user": t("auth.errorCancelled"),
+        "auth/too-many-requests": t("auth.errorTooMany"),
+        "auth/cancelled-popup-request": t("auth.errorCancelled"),
       };
-      setError(map[err.code] ?? "Something went wrong. Please try again.");
+      setError(map[err.code] ?? t("auth.errorGeneric"));
       gsap.fromTo(
         cardRef.current,
         { x: -6 },
@@ -74,7 +76,7 @@ export default function AuthModal({ onClose }) {
           <button
             className="auth-close-btn"
             onClick={dismiss}
-            aria-label="Close"
+            aria-label={t("auth.close")}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
@@ -87,8 +89,8 @@ export default function AuthModal({ onClose }) {
           </button>
         </div>
 
-        <h2 className="auth-title">Welcome to Habitflow</h2>
-        <p className="auth-subtitle">Sign in to start tracking your habits</p>
+        <h2 className="auth-title">{t("auth.title")}</h2>
+        <p className="auth-subtitle">{t("auth.subtitle")}</p>
 
         <button
           className="auth-google-btn"
@@ -117,7 +119,7 @@ export default function AuthModal({ onClose }) {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              {t("auth.continueGoogle")}
             </>
           )}
         </button>

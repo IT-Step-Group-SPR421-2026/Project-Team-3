@@ -1,24 +1,39 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { useTranslation } from "react-i18next";
 import "./Leaderboard.css";
 
 // Helper to determine badge colors based on rank parsing
 function getRankStyle(rankName) {
   const r = (rankName || "").toLowerCase();
-  if (r === "mastery") return { color: "#fbbf24", glow: "rgba(251, 191, 36, 0.2)" }; // amber
-  if (r === "consistent" || r === "focused") return { color: "#60a5fa", glow: "rgba(96, 165, 250, 0.2)" }; // blue
-  if (r === "resilient" || r === "disciplined") return { color: "#a78bfa", glow: "rgba(167, 139, 250, 0.2)" }; // purple
-  
+  if (r === "mastery")
+    return { color: "#fbbf24", glow: "rgba(251, 191, 36, 0.2)" }; // amber
+  if (r === "consistent" || r === "focused")
+    return { color: "#60a5fa", glow: "rgba(96, 165, 250, 0.2)" }; // blue
+  if (r === "resilient" || r === "disciplined")
+    return { color: "#a78bfa", glow: "rgba(167, 139, 250, 0.2)" }; // purple
+
   // default (seedling, sprout, routine...) uses the app's emerald accent
   return { color: "var(--accent)", glow: "var(--accent-glow)" };
 }
 
-export default function Leaderboard({ leaderboardData, currentUserXp, currentUserId, loading }) {
+export default function Leaderboard({
+  leaderboardData,
+  currentUserXp,
+  currentUserId,
+  loading,
+}) {
+  const { t } = useTranslation();
   const listRef = useRef(null);
 
   // Animate the list items stumbling in when data finishes loading
   useEffect(() => {
-    if (!loading && leaderboardData && leaderboardData.length > 0 && listRef.current) {
+    if (
+      !loading &&
+      leaderboardData &&
+      leaderboardData.length > 0 &&
+      listRef.current
+    ) {
       const items = listRef.current.querySelectorAll(".leaderboard-item");
       gsap.fromTo(
         items,
@@ -29,8 +44,8 @@ export default function Leaderboard({ leaderboardData, currentUserXp, currentUse
           duration: 0.4,
           stagger: 0.05,
           ease: "power2.out",
-          clearProps: "all"
-        }
+          clearProps: "all",
+        },
       );
     }
   }, [loading, leaderboardData]);
@@ -40,15 +55,20 @@ export default function Leaderboard({ leaderboardData, currentUserXp, currentUse
   return (
     <div className="leaderboard-section">
       <div className="leaderboard-card-header">
-        <span className="leaderboard-card-title">Leaderboard</span>
+        <span className="leaderboard-card-title">{t("leaderboard.title")}</span>
         {currentUserXp && (
           <div className="leaderboard-user-xp">
-            <span className="user-xp-label">Your Rank:</span>
-            <span className="user-xp-value" style={{ color: getRankStyle(currentUserXp.rank).color }}>
+            <span className="user-xp-label">{t("leaderboard.yourRank")}</span>
+            <span
+              className="user-xp-value"
+              style={{ color: getRankStyle(currentUserXp.rank).color }}
+            >
               {currentUserXp.rank}
             </span>
             <span className="user-xp-divider">•</span>
-            <span className="user-xp-total">{currentUserXp.xp_total} XP</span>
+            <span className="user-xp-total">
+              {currentUserXp.xp_total} {t("leaderboard.xp")}
+            </span>
           </div>
         )}
       </div>
@@ -56,47 +76,58 @@ export default function Leaderboard({ leaderboardData, currentUserXp, currentUse
       <div className="leaderboard-content">
         {loading ? (
           <div className="leaderboard-message">
-             <div className="leaderboard-spinner"></div>
-             Loading ranks...
+            <div className="leaderboard-spinner"></div>
+            {t("leaderboard.loading")}
           </div>
         ) : !hasData ? (
           <div className="leaderboard-message empty">
-            No leaderboard data available yet.
+            {t("leaderboard.empty")}
           </div>
         ) : (
           <div className="leaderboard-list" ref={listRef}>
             {leaderboardData.map((user, index) => {
               const isCurrentUser = user.user_id === currentUserId;
               const rankStyle = getRankStyle(user.rank);
-              
+
               return (
-                <div 
-                  key={user.user_id} 
+                <div
+                  key={user.user_id}
                   className={`leaderboard-item ${isCurrentUser ? "is-current-user" : ""}`}
                 >
                   <div className="lb-rank-num">
-                    {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`}
+                    {index === 0
+                      ? "🥇"
+                      : index === 1
+                        ? "🥈"
+                        : index === 2
+                          ? "🥉"
+                          : `${index + 1}.`}
                   </div>
-                  
+
                   <div className="lb-user-info">
                     <div className="lb-user-name">
-                      {user.display_name || "Unknown User"}
-                      {isCurrentUser && <span className="lb-you-badge">YOU</span>}
+                      {user.display_name || t("leaderboard.unknownUser")}
+                      {isCurrentUser && (
+                        <span className="lb-you-badge">
+                          {t("leaderboard.you")}
+                        </span>
+                      )}
                     </div>
-                    <div 
-                      className="lb-tier-badge" 
-                      style={{ 
-                        color: rankStyle.color, 
+                    <div
+                      className="lb-tier-badge"
+                      style={{
+                        color: rankStyle.color,
                         backgroundColor: rankStyle.glow,
-                        border: `1px solid ${rankStyle.color}40`
+                        border: `1px solid ${rankStyle.color}40`,
                       }}
                     >
                       {user.rank}
                     </div>
                   </div>
-                  
+
                   <div className="lb-xp-total">
-                    {user.xp_total} <span className="lb-xp-label">XP</span>
+                    {user.xp_total}{" "}
+                    <span className="lb-xp-label">{t("leaderboard.xp")}</span>
                   </div>
                 </div>
               );

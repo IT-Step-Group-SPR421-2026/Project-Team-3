@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getDateLocale } from "../../utils/locale";
 import "./StatsPanel.css";
 
 export default function StatsPanel({
@@ -7,7 +9,9 @@ export default function StatsPanel({
   totalHabits,
   stats,
 }) {
+  const { t, i18n } = useTranslation();
   const [bucketView, setBucketView] = useState("weekly");
+  const locale = getDateLocale(i18n.resolvedLanguage);
 
   const weekly = stats?.weekly || [];
   const monthly = stats?.monthly || [];
@@ -21,61 +25,65 @@ export default function StatsPanel({
       <div className="streak-hero">
         <div className="streak-hero-icon">🔥</div>
         <div>
-          <div className="streak-hero-label">Best active streak</div>
+          <div className="streak-hero-label">{t("stats.bestActiveStreak")}</div>
           <div className="streak-hero-value">
-            {maxCurrentStreak > 0 ? `${maxCurrentStreak} days` : "—"}
+            {maxCurrentStreak > 0
+              ? t("stats.days", { count: maxCurrentStreak })
+              : "—"}
           </div>
           <div className="streak-hero-sub">
-            {maxCurrentStreak > 0 ? "Keep it going!" : "Start a streak today"}
+            {maxCurrentStreak > 0
+              ? t("stats.keepGoing")
+              : t("stats.startStreak")}
           </div>
         </div>
       </div>
 
       <div className="stats-grid-2">
         <div className="stat-card">
-          <div className="stat-label">Completed today</div>
+          <div className="stat-label">{t("stats.completedToday")}</div>
           <div
             className={`stat-value ${doneTodayCount === totalHabits && totalHabits > 0 ? "accent" : ""}`}
           >
             {doneTodayCount} / {totalHabits}
           </div>
-          <div className="stat-sub">habits done</div>
+          <div className="stat-sub">{t("stats.habitsDone")}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">All-time total</div>
+          <div className="stat-label">{t("stats.allTimeTotal")}</div>
           <div className="stat-value">{stats?.total_completed ?? 0}</div>
-          <div className="stat-sub">completions</div>
+          <div className="stat-sub">{t("stats.completions")}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">Total habits</div>
+          <div className="stat-label">{t("stats.totalHabits")}</div>
           <div className="stat-value">{stats?.habits_count ?? 0}</div>
-          <div className="stat-sub">tracked</div>
+          <div className="stat-sub">{t("stats.tracked")}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">This week</div>
+          <div className="stat-label">{t("stats.thisWeek")}</div>
           <div className="stat-value">
             {stats?.weekly?.slice(-1)[0]?.count ?? 0}
           </div>
-          <div className="stat-sub">check-ins</div>
+          <div className="stat-sub">{t("stats.checkIns")}</div>
         </div>
       </div>
 
       {/* Weekly/Monthly buckets */}
       <div className="buckets-section">
         <div className="buckets-header">
-          <span className="buckets-title">Activity trend</span>
+          <span className="buckets-title">{t("stats.activityTrend")}</span>
           <div className="bucket-toggle">
             <button
               className={`bucket-toggle-btn ${bucketView === "weekly" ? "active" : ""}`}
               onClick={() => setBucketView("weekly")}
             >
-              Weekly
+              {t("stats.weekly")}
             </button>
             <button
               className={`bucket-toggle-btn ${bucketView === "monthly" ? "active" : ""}`}
               onClick={() => setBucketView("monthly")}
             >
-              Monthly
+              {t("stats.monthly")}
             </button>
           </div>
         </div>
@@ -85,7 +93,7 @@ export default function StatsPanel({
             recentWeeks.length > 0 ? (
               recentWeeks.map((bucket, i) => {
                 const date = new Date(bucket.week_start);
-                const label = date.toLocaleDateString("en-US", {
+                const label = date.toLocaleDateString(locale, {
                   month: "short",
                   day: "numeric",
                 });
@@ -105,12 +113,12 @@ export default function StatsPanel({
                 );
               })
             ) : (
-              <div className="empty-state">No weekly data yet</div>
+              <div className="empty-state">{t("stats.noWeeklyData")}</div>
             )
           ) : recentMonths.length > 0 ? (
             recentMonths.map((bucket, i) => {
               const date = new Date(bucket.month_start);
-              const label = date.toLocaleDateString("en-US", {
+              const label = date.toLocaleDateString(locale, {
                 month: "short",
                 year: "numeric",
               });
@@ -130,7 +138,7 @@ export default function StatsPanel({
               );
             })
           ) : (
-            <div className="empty-state">No monthly data yet</div>
+            <div className="empty-state">{t("stats.noMonthlyData")}</div>
           )}
         </div>
       </div>

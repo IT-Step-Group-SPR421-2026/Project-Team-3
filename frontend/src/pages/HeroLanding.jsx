@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { IconLeaf } from "../components/icons/Icons";
 import "./HeroLanding.css";
 
@@ -12,18 +13,18 @@ const TITLE = "Habitflow";
 const FEATURES = [
   {
     icon: "📊",
-    label: "Heatmap Tracking",
-    desc: "Visualize your consistency with GitHub-style heatmaps",
+    labelKey: "hero.features.heatmap.title",
+    descKey: "hero.features.heatmap.desc",
   },
   {
     icon: "🔥",
-    label: "Streaks",
-    desc: "Build momentum and watch your streaks grow daily",
+    labelKey: "hero.features.streaks.title",
+    descKey: "hero.features.streaks.desc",
   },
   {
     icon: "📈",
-    label: "Analytics",
-    desc: "Weekly & monthly deep-dive insights on your habits",
+    labelKey: "hero.features.analytics.title",
+    descKey: "hero.features.analytics.desc",
   },
 ];
 
@@ -32,22 +33,40 @@ const STATS = [
     display: "100+",
     numVal: 100,
     suffix: "+",
-    label: "Days Tracked",
-    desc: "Build consistency that lasts",
+    labelKey: "hero.stats.daysTracked.label",
+    descKey: "hero.stats.daysTracked.desc",
   },
   {
     display: "5×",
     numVal: 5,
     suffix: "×",
-    label: "More Likely",
-    desc: "Users who stick to their habits",
+    labelKey: "hero.stats.moreLikely.label",
+    descKey: "hero.stats.moreLikely.desc",
   },
   {
     display: "∞",
     numVal: null,
     suffix: "",
-    label: "Possibilities",
-    desc: "Create unlimited habits",
+    labelKey: "hero.stats.possibilities.label",
+    descKey: "hero.stats.possibilities.desc",
+  },
+];
+
+const JOURNEY_STEPS = [
+  {
+    icon: "🧭",
+    titleKey: "hero.journey.steps.capture.title",
+    descKey: "hero.journey.steps.capture.desc",
+  },
+  {
+    icon: "🧱",
+    titleKey: "hero.journey.steps.consistency.title",
+    descKey: "hero.journey.steps.consistency.desc",
+  },
+  {
+    icon: "🚀",
+    titleKey: "hero.journey.steps.momentum.title",
+    descKey: "hero.journey.steps.momentum.desc",
   },
 ];
 
@@ -67,6 +86,7 @@ const CREATORS = [
 ];
 
 export default function HeroLanding() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const logoRef = useRef(null);
@@ -376,6 +396,61 @@ export default function HeroLanding() {
         ease: "power3.out",
       });
 
+      // ── Journey section reveal ──
+      gsap.from([".journey-kicker", ".journey-title", ".journey-subtitle"], {
+        scrollTrigger: {
+          trigger: ".journey-section",
+          start: "top 84%",
+          toggleActions: "play none none reverse",
+        },
+        y: 26,
+        opacity: 0,
+        duration: 0.68,
+        stagger: 0.1,
+        ease: "power3.out",
+      });
+
+      gsap.from(".journey-panel", {
+        scrollTrigger: {
+          trigger: ".journey-grid",
+          start: "top 82%",
+          toggleActions: "play none none reverse",
+        },
+        x: -36,
+        y: 24,
+        opacity: 0,
+        duration: 0.75,
+        ease: "power3.out",
+      });
+
+      gsap.from(".journey-proof-chip", {
+        scrollTrigger: {
+          trigger: ".journey-grid",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        y: 14,
+        opacity: 0,
+        duration: 0.45,
+        stagger: 0.08,
+        delay: 0.15,
+        ease: "power2.out",
+      });
+
+      gsap.from(".journey-step", {
+        scrollTrigger: {
+          trigger: ".journey-grid",
+          start: "top 82%",
+          toggleActions: "play none none reverse",
+        },
+        x: 30,
+        y: 22,
+        opacity: 0,
+        duration: 0.62,
+        stagger: 0.1,
+        ease: "back.out(1.35)",
+      });
+
       // ── Creators section reveal ──
       gsap.from(".creators-label", {
         scrollTrigger: {
@@ -492,7 +567,7 @@ export default function HeroLanding() {
           {/* Badge pill */}
           <div className="hero-badge" ref={badgeRef}>
             <span className="badge-dot" />
-            <span>Now available — free to use</span>
+            <span>{t("hero.badge")}</span>
           </div>
 
           {/* Title — split into characters for GSAP */}
@@ -506,15 +581,15 @@ export default function HeroLanding() {
 
           {/* Subtitle */}
           <p className="landing-subtitle" ref={subtitleRef}>
-            Build better habits, one day at a time.
+            {t("hero.subtitleLine1")}
             <br />
-            Track your progress with clean, beautiful insights.
+            {t("hero.subtitleLine2")}
           </p>
 
           {/* CTA buttons */}
           <div className="cta-wrap" ref={ctaWrapRef}>
             <button className="landing-cta primary" onClick={handleCTAClick}>
-              Get Started
+              {t("hero.getStarted")}
               <svg
                 width="16"
                 height="16"
@@ -540,8 +615,8 @@ export default function HeroLanding() {
                 <div className="feature-icon-wrap">
                   <span className="feature-icon">{f.icon}</span>
                 </div>
-                <h3>{f.label}</h3>
-                <p>{f.desc}</p>
+                <h3>{t(f.labelKey)}</h3>
+                <p>{t(f.descKey)}</p>
               </div>
             ))}
           </div>
@@ -549,7 +624,7 @@ export default function HeroLanding() {
 
         {/* Scroll hint */}
         <div className="scroll-hint" ref={scrollHintRef}>
-          <span className="scroll-hint-label">Scroll to explore</span>
+          <span className="scroll-hint-label">{t("hero.scroll")}</span>
           <div className="scroll-hint-arrow">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path
@@ -579,17 +654,17 @@ export default function HeroLanding() {
               >
                 {s.display}
               </span>
-              <h3>{s.label}</h3>
-              <p>{s.desc}</p>
+              <h3>{t(s.labelKey)}</h3>
+              <p>{t(s.descKey)}</p>
             </div>
           ))}
         </div>
 
         <div className="scroll-cta">
-          <p className="cta-eyebrow">Start today</p>
-          <h2>Ready to transform your habits?</h2>
+          <p className="cta-eyebrow">{t("hero.startToday")}</p>
+          <h2>{t("hero.transformTitle")}</h2>
           <button className="landing-cta primary" onClick={handleCTAClick}>
-            Start Your Journey
+            {t("hero.startJourney")}
             <svg
               width="16"
               height="16"
@@ -612,11 +687,56 @@ export default function HeroLanding() {
       {/* ── Divider ── */}
       <div className="section-divider" />
 
+      {/* ── Journey narrative ── */}
+      <section className="journey-section">
+        <div className="journey-head">
+          <p className="journey-kicker">{t("hero.journey.kicker")}</p>
+          <h2 className="journey-title">{t("hero.journey.title")}</h2>
+          <p className="journey-subtitle">{t("hero.journey.subtitle")}</p>
+        </div>
+
+        <div className="journey-grid">
+          <div className="journey-panel">
+            <p className="journey-panel-title">
+              {t("hero.journey.panelTitle")}
+            </p>
+            <p className="journey-panel-desc">{t("hero.journey.panelDesc")}</p>
+
+            <div className="journey-proof-row">
+              <span className="journey-proof-chip">
+                {t("hero.journey.proof1")}
+              </span>
+              <span className="journey-proof-chip">
+                {t("hero.journey.proof2")}
+              </span>
+              <span className="journey-proof-chip">
+                {t("hero.journey.proof3")}
+              </span>
+            </div>
+          </div>
+
+          <div className="journey-steps">
+            {JOURNEY_STEPS.map((step, i) => (
+              <div className="journey-step" key={i}>
+                <div className="journey-step-icon">{step.icon}</div>
+                <div className="journey-step-copy">
+                  <h3>{t(step.titleKey)}</h3>
+                  <p>{t(step.descKey)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Divider ── */}
+      <div className="section-divider" />
+
       {/* ── Creators ── */}
       <section className="creators-section">
         <div className="creators-heading-wrap">
-          <span className="creators-label">The team</span>
-          <h2 className="creators-title-text">Crafted by</h2>
+          <span className="creators-label">{t("hero.team")}</span>
+          <h2 className="creators-title-text">{t("hero.craftedBy")}</h2>
         </div>
         <div className="creators-grid">
           {CREATORS.map((c, i) => (
@@ -641,7 +761,7 @@ export default function HeroLanding() {
                 >
                   <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
                 </svg>
-                View Profile
+                {t("hero.viewProfile")}
               </div>
             </a>
           ))}

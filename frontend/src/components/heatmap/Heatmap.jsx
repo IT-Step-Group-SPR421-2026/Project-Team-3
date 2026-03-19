@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { formatFull, todayStr } from "../../utils/dateHelpers";
+import { getDateLocale } from "../../utils/locale";
 import "./Heatmap.css";
 
 // Monday = 0, Sunday = 6 (GitHub style)
@@ -82,7 +84,7 @@ function buildHeatmapGrid(heatmapData) {
 
 // Returns [{ label, startWeek, span }] so each label can be centered over
 // exactly the weeks that belong to that month.
-function buildMonthLabels(weeks) {
+function buildMonthLabels(weeks, locale) {
   // Find the start week index for each month
   const monthMap = new Map(); // "YYYY-MM" -> startWeekIndex
 
@@ -101,7 +103,7 @@ function buildMonthLabels(weeks) {
   const entries = [...monthMap.entries()]
     .map(([key, startWeek]) => {
       const [year, month] = key.split("-").map(Number);
-      const label = new Date(year, month, 1).toLocaleDateString("en-US", {
+      const label = new Date(year, month, 1).toLocaleDateString(locale, {
         month: "short",
       });
       return { label, startWeek };
@@ -123,8 +125,10 @@ function buildMonthLabels(weeks) {
 // Heatmap Component
 // ─────────────────────────────────────────────────────────────
 export default function Heatmap({ heatmapData, onYearChange, loading }) {
+  const { t, i18n } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState("last365");
+  const locale = getDateLocale(i18n.resolvedLanguage);
 
   const handleYearChange = (year) => {
     setSelectedYear(year);
@@ -137,7 +141,7 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
   const availableYears = [currentYear];
 
   const heatmapWeeks = buildHeatmapGrid(heatmapData);
-  const monthLabels = buildMonthLabels(heatmapWeeks);
+  const monthLabels = buildMonthLabels(heatmapWeeks, locale);
 
   // Check if we have any actual data
   const hasData = heatmapData && heatmapData.length > 0;
@@ -145,14 +149,14 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
   return (
     <div className="heatmap-section">
       <div className="heatmap-card-header">
-        <span className="heatmap-card-title">Activity Heatmap</span>
+        <span className="heatmap-card-title">{t("heatmap.title")}</span>
         <div className="heatmap-year-selector">
           <button
             className={`year-btn ${selectedYear === "last365" ? "active" : ""}`}
             onClick={() => handleYearChange("last365")}
             disabled={loading}
           >
-            Last 365 days
+            {t("heatmap.last365")}
           </button>
           {availableYears.map((year) => (
             <button
@@ -171,14 +175,12 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
         {loading ? (
           <div className="heatmap-loading">
             <div className="heatmap-spinner"></div>
-            <div className="heatmap-loading-text">Loading...</div>
+            <div className="heatmap-loading-text">{t("heatmap.loading")}</div>
           </div>
         ) : !hasData ? (
           <div className="heatmap-empty">
             <div className="heatmap-empty-icon">📊</div>
-            <div className="heatmap-empty-text">
-              No activity data yet. Start completing habits to see your heatmap!
-            </div>
+            <div className="heatmap-empty-text">{t("heatmap.empty")}</div>
           </div>
         ) : (
           <>
@@ -241,7 +243,14 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
                                     : undefined,
                                   outlineOffset: "1px",
                                 }}
-                                data-tooltip={`${formatFull(cell.date)}${cell.count ? `  ·  ${cell.count} habit${cell.count > 1 ? "s" : ""}` : ""}`}
+                                data-tooltip={
+                                  cell.count
+                                    ? t("heatmap.tooltip", {
+                                        date: formatFull(cell.date, locale),
+                                        count: cell.count,
+                                      })
+                                    : formatFull(cell.date, locale)
+                                }
                               />
                             ),
                           )}
@@ -255,7 +264,7 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
 
             {/* Legend */}
             <div className="heatmap-legend">
-              <span className="heatmap-legend-label">Less</span>
+              <span className="heatmap-legend-label">{t("heatmap.less")}</span>
               {[
                 "var(--heat-0)",
                 "var(--heat-1)",
@@ -269,11 +278,11 @@ export default function Heatmap({ heatmapData, onYearChange, loading }) {
                     key={i}
                     className="heatmap-legend-cell"
                     style={{ background: c }}
-                    title={`${tooltips[i]} habits per day`}
+                    title={t("heatmap.legend", { label: tooltips[i] })}
                   />
                 );
               })}
-              <span className="heatmap-legend-label">More</span>
+              <span className="heatmap-legend-label">{t("heatmap.more")}</span>
             </div>
           </>
         )}

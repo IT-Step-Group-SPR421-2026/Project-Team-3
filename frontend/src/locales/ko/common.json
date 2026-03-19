@@ -1,0 +1,129 @@
+{
+  "header": {
+    "backHome": "홈으로 돌아가기",
+    "signIn": "로그인",
+    "language": "언어"
+  },
+  "dashboard": {
+    "errorTitle": "문제가 발생했습니다",
+    "errorMessage": "데이터를 불러오지 못했습니다. 연결을 확인한 후 다시 시도해 주세요.",
+    "tryAgain": "다시 시도",
+    "todayHabits": "오늘의 습관",
+    "doneCount": "{{done}} / {{total}} 완료",
+    "addHabit": "습관 추가",
+    "stats": "통계"
+  },
+  "stats": {
+    "bestActiveStreak": "현재 최고 연속 기록",
+    "days": "{{count}}일",
+    "keepGoing": "좋아요, 계속 가요!",
+    "startStreak": "오늘부터 연속 기록을 시작하세요",
+    "completedToday": "오늘 완료",
+    "habitsDone": "완료한 습관",
+    "allTimeTotal": "누적 합계",
+    "completions": "완료 횟수",
+    "totalHabits": "전체 습관",
+    "tracked": "추적 중",
+    "thisWeek": "이번 주",
+    "checkIns": "체크인",
+    "activityTrend": "활동 추이",
+    "weekly": "주간",
+    "monthly": "월간",
+    "noWeeklyData": "주간 데이터가 아직 없습니다",
+    "noMonthlyData": "월간 데이터가 아직 없습니다"
+  },
+  "heatmap": {
+    "title": "활동 히트맵",
+    "last365": "최근 365일",
+    "loading": "불러오는 중...",
+    "empty": "활동 데이터가 아직 없습니다. 습관을 완료해 히트맵을 채워보세요!",
+    "less": "적음",
+    "more": "많음",
+    "tooltip": "{{date}} · {{count}}개 습관",
+    "tooltip_other": "{{date}} · {{count}}개 습관",
+    "legend": "하루 {{label}}개 습관"
+  },
+  "leaderboard": {
+    "title": "리더보드",
+    "yourRank": "내 랭크:",
+    "loading": "랭크 불러오는 중...",
+    "empty": "리더보드 데이터가 아직 없습니다.",
+    "unknownUser": "알 수 없는 사용자",
+    "you": "나",
+    "xp": "XP"
+  },
+  "auth": {
+    "close": "닫기",
+    "title": "Habitflow에 오신 것을 환영합니다",
+    "subtitle": "로그인하고 습관 추적을 시작하세요",
+    "continueGoogle": "Google로 계속하기",
+    "errorCancelled": "로그인이 취소되었습니다.",
+    "errorTooMany": "시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.",
+    "errorGeneric": "문제가 발생했습니다. 다시 시도해 주세요."
+  },
+  "hero": {
+    "badge": "지금 사용 가능 — 무료",
+    "subtitleLine1": "하루씩 더 나은 습관을 만들어 보세요.",
+    "subtitleLine2": "깔끔하고 아름다운 인사이트로 진행 상황을 추적하세요.",
+    "getStarted": "시작하기",
+    "scroll": "스크롤하여 둘러보기",
+    "features": {
+      "heatmap": {
+        "title": "히트맵 추적",
+        "desc": "GitHub 스타일 히트맵으로 꾸준함을 시각화하세요"
+      },
+      "streaks": {
+        "title": "연속 기록",
+        "desc": "모멘텀을 만들고 매일 연속 기록을 늘려보세요"
+      },
+      "analytics": {
+        "title": "분석",
+        "desc": "습관을 주간/월간으로 깊이 있게 분석하세요"
+      }
+    },
+    "stats": {
+      "daysTracked": {
+        "label": "추적한 일수",
+        "desc": "오래 지속되는 꾸준함을 만드세요"
+      },
+      "moreLikely": {
+        "label": "더 높은 성공률",
+        "desc": "사용자는 습관을 더 잘 유지합니다"
+      },
+      "possibilities": {
+        "label": "무한한 가능성",
+        "desc": "습관을 무제한으로 만들어 보세요"
+      }
+    },
+    "startToday": "오늘 시작하세요",
+    "transformTitle": "습관을 바꿀 준비가 되었나요?",
+    "startJourney": "여정을 시작하세요",
+    "team": "팀",
+    "craftedBy": "만든 사람들",
+    "viewProfile": "프로필 보기",
+    "journey": {
+      "kicker": "Habitflow 작동 방식",
+      "title": "규율을 쌓아 올리는 단순한 루프",
+      "subtitle": "기록하고, 확인하고, 반복하세요. 매일의 체크인이 다음 행동을 더 쉽게 만듭니다.",
+      "panelTitle": "모멘텀을 위한 설계",
+      "panelDesc": "Habitflow는 흩어진 노력을 하나의 리듬으로 바꿉니다. 연속 기록, 히트맵, 주간 인사이트를 한 화면에서 제공합니다.",
+      "proof1": "하루 1분 체크인",
+      "proof2": "시각화된 연속 기록 압력",
+      "proof3": "주간 트렌드 피드백",
+      "steps": {
+        "capture": {
+          "title": "행동 기록하기",
+          "desc": "몇 초 만에 습관을 체크해 꾸준함의 마찰을 줄이세요."
+        },
+        "consistency": {
+          "title": "보이는 꾸준함 만들기",
+          "desc": "히트맵과 연속 기록을 채우며 책임감을 유지하세요."
+        },
+        "momentum": {
+          "title": "모멘텀 확장하기",
+          "desc": "트렌드 인사이트로 루틴을 다듬고 성장을 고정하세요."
+        }
+      }
+    }
+  }
+}

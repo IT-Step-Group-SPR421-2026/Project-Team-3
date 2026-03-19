@@ -103,11 +103,31 @@ class UserStats(models.Model):
         return f"UserStats({self.user_id})"
 
 
+class XpEvent(models.Model):
+    """Tracks XP awards to prevent double-crediting the same habit/date."""
+
+    user_id = models.CharField(max_length=128, db_index=True)
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name="xp_events")
+    date = models.DateField()
+    awarded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user_id", "habit", "date"], name="uniq_xp_event"
+            )
+        ]
+
+    def __str__(self):
+        return f"XpEvent({self.user_id}, {self.habit_id}, {self.date})"
+
+
 class Subscription(models.Model):
     """
     Tracks one-time permanent subscription for users
     Transaction hash stored for verification on-chain
     """
+
     # Firebase UID of the user
     user_id = models.CharField(max_length=128, unique=True, db_index=True)
     # Wallet address that made the purchase

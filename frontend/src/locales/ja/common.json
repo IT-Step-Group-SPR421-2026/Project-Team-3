@@ -1,0 +1,129 @@
+{
+  "header": {
+    "backHome": "ホームへ戻る",
+    "signIn": "サインイン",
+    "language": "言語"
+  },
+  "dashboard": {
+    "errorTitle": "問題が発生しました",
+    "errorMessage": "データの読み込みに失敗しました。接続を確認してもう一度お試しください。",
+    "tryAgain": "再試行",
+    "todayHabits": "今日の習慣",
+    "doneCount": "{{done}} / {{total}} 完了",
+    "addHabit": "習慣を追加",
+    "stats": "統計"
+  },
+  "stats": {
+    "bestActiveStreak": "現在の最高ストリーク",
+    "days": "{{count}}日",
+    "keepGoing": "この調子で続けましょう！",
+    "startStreak": "今日からストリークを始めよう",
+    "completedToday": "今日の達成",
+    "habitsDone": "達成した習慣",
+    "allTimeTotal": "累計",
+    "completions": "達成回数",
+    "totalHabits": "習慣数",
+    "tracked": "追跡中",
+    "thisWeek": "今週",
+    "checkIns": "チェックイン",
+    "activityTrend": "アクティビティ推移",
+    "weekly": "週次",
+    "monthly": "月次",
+    "noWeeklyData": "週次データはまだありません",
+    "noMonthlyData": "月次データはまだありません"
+  },
+  "heatmap": {
+    "title": "アクティビティヒートマップ",
+    "last365": "直近365日",
+    "loading": "読み込み中...",
+    "empty": "まだアクティビティがありません。習慣を達成してヒートマップを作りましょう！",
+    "less": "少",
+    "more": "多",
+    "tooltip": "{{date}} · {{count}}件の習慣",
+    "tooltip_other": "{{date}} · {{count}}件の習慣",
+    "legend": "1日あたり {{label}} 件"
+  },
+  "leaderboard": {
+    "title": "リーダーボード",
+    "yourRank": "あなたのランク:",
+    "loading": "ランキング読み込み中...",
+    "empty": "まだリーダーボードのデータがありません。",
+    "unknownUser": "不明なユーザー",
+    "you": "あなた",
+    "xp": "XP"
+  },
+  "auth": {
+    "close": "閉じる",
+    "title": "Habitflowへようこそ",
+    "subtitle": "サインインして習慣トラッキングを始めましょう",
+    "continueGoogle": "Googleで続行",
+    "errorCancelled": "サインインはキャンセルされました。",
+    "errorTooMany": "試行回数が多すぎます。しばらくしてから再度お試しください。",
+    "errorGeneric": "問題が発生しました。もう一度お試しください。"
+  },
+  "hero": {
+    "badge": "公開中 — 無料で使えます",
+    "subtitleLine1": "一日ずつ、より良い習慣を作ろう。",
+    "subtitleLine2": "洗練された美しいインサイトで進捗を追跡。",
+    "getStarted": "はじめる",
+    "scroll": "スクロールして探索",
+    "features": {
+      "heatmap": {
+        "title": "ヒートマップ追跡",
+        "desc": "GitHub風ヒートマップで継続性を可視化"
+      },
+      "streaks": {
+        "title": "ストリーク",
+        "desc": "勢いを作り、日々ストリークを伸ばそう"
+      },
+      "analytics": {
+        "title": "分析",
+        "desc": "週次・月次で習慣を深く分析"
+      }
+    },
+    "stats": {
+      "daysTracked": {
+        "label": "追跡日数",
+        "desc": "続く習慣を育てる"
+      },
+      "moreLikely": {
+        "label": "達成率向上",
+        "desc": "継続できるユーザー傾向"
+      },
+      "possibilities": {
+        "label": "可能性",
+        "desc": "習慣を無制限に作成"
+      }
+    },
+    "startToday": "今日から始めよう",
+    "transformTitle": "習慣を変える準備はできた？",
+    "startJourney": "新しい習慣を始める",
+    "team": "チーム",
+    "craftedBy": "制作",
+    "viewProfile": "プロフィールを見る",
+    "journey": {
+      "kicker": "Habitflowの仕組み",
+      "title": "シンプルな循環が、継続力を積み上げる",
+      "subtitle": "記録して、見える化して、繰り返す。毎日のチェックインが次の行動を楽にします。",
+      "panelTitle": "勢いを生む設計",
+      "panelDesc": "Habitflowは、点だった努力をリズムに変えます。ストリーク、ヒートマップ、週次の振り返りを一箇所で。",
+      "proof1": "1分で毎日チェックイン",
+      "proof2": "可視化される継続圧",
+      "proof3": "週次トレンドのフィードバック",
+      "steps": {
+        "capture": {
+          "title": "行動を記録する",
+          "desc": "数秒で完了記録。継続のハードルを極限まで下げます。"
+        },
+        "consistency": {
+          "title": "継続を見える化する",
+          "desc": "ヒートマップとストリークで進捗を可視化し、習慣化を後押しします。"
+        },
+        "momentum": {
+          "title": "勢いを積み上げる",
+          "desc": "トレンドを見て習慣を調整し、成長を定着させます。"
+        }
+      }
+    }
+  }
+}
