@@ -3,7 +3,9 @@
 // ─────────────────────────────────────────────────────────────
 import { auth } from "../firebase";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api";
+const API =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://project-team-3.onrender.com/api";
 
 export async function apiFetch(path, opts = {}) {
   // Attach Firebase ID token if a user is signed in

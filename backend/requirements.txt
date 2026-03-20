@@ -12,6 +12,7 @@ charset-normalizer==3.4.5
 cryptography==46.0.5
 cytoolz==1.1.0
 Django==6.0.2
+dj-database-url==2.2.0
 django-cors-headers==4.9.0
 djangorestframework==3.16.1
 gunicorn==22.0.0
@@ -54,6 +55,7 @@ pyasn1==0.6.2
 pyasn1_modules==0.4.2
 pycparser==3.0
 pycryptodome==3.23.0
+psycopg[binary]==3.2.3
 pydantic==2.12.5
 pydantic_core==2.41.5
 PyJWT==2.11.0
